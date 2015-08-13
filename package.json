@@ -1,0 +1,26 @@
+{
+  "name": "screeps",
+  "version": "1.0.0",
+  "description": "screeps scripts",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-typescript": "^2.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vanhouc/screeps.git"
+  },
+  "author": "Cameron VanHouzen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vanhouc/screeps/issues"
+  },
+  "homepage": "https://github.com/vanhouc/screeps#readme"
+}
