@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "screeps scripts",
   "main": "gulpfile.js",
-  "dependencies": {
-    "gulp": "^3.9.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-typescript": "^2.8.0"
