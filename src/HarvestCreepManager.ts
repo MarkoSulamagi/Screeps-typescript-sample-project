@@ -1,37 +1,41 @@
 /// <reference path="_references.ts" />
+/// <reference path="CreepManager.ts" />
+
 class HarvestCreepManager extends CreepManager {
-	static registerCreep(name: string) {
+	static registerCreep(name: string): number {
 		var creep = Game.creeps[name];
 		if (!creep) { return Result.ERR_INVALID_TARGET; }
 		var memory = CreepManager.memory(name);
 		if (memory.status != CreepStatus.idle) { return Result.ERR_BUSY; }
-		memory.role = Role.harvester;
-		memory.harvester = { sourceId: null, toSource: null, spawnName: null, toSpawn: null};
+		memory.role = CreepRole.harvester;
+		memory.harvester = { sourceId: null, toSource: null, spawnName: null, toSpawn: null };
 		return Result.OK;
 	}
 	static getIdleHarvesters(names: string[]) {
 		return names.filter((name) => {
 			var memory = CreepManager.memory(name)
-			return memory.role === Role.harvester && memory.status === CreepStatus.idle
+			return memory.role === CreepRole.harvester && memory.status === CreepStatus.idle
 		});
 	}
-	private static AssignToClosest(name: string) {
-		var creep = Game.creeps[name];
-		var source = creep.pos.findClosest<Source>(FindCode.FIND_SOURCES);
-		var memory = CreepManager.memory(name);
-		memory.harvester.sourceId = source.id;
-		var spawn = source.pos.findClosest<Spawn>(FindCode.FIND_MY_SPAWNS);
-		memory.harvester.spawnName = spawn.name;
-	}
 	static main(names: string[]) {
+		super.main(names);
 		names.forEach(name => {
 			var memory = CreepManager.memory(name);
 			if (!memory) return;
-			if (memory.role == Role.none) {
-				this.registerCreep(name);
+			if (memory.role == CreepRole.none) {
+				console.log("registering harvest creep " + name);
+				var result = HarvestCreepManager.registerCreep(name);
+				if (result != Result.OK) {
+					console.log("failed to register " + name + "as harvester, error code: " + result);
+				}
 			}
 			var creep = Game.creeps[name];
 			if (memory.status == CreepStatus.idle) {
+				var source = creep.pos.findClosest<Source>(FindCode.FIND_SOURCES);
+				var memory = CreepManager.memory(name);
+				memory.harvester.sourceId = source.id;
+				var spawn = source.pos.findClosest<Spawn>(FindCode.FIND_MY_SPAWNS);
+				memory.harvester.spawnName = spawn.name;
 				memory.status = CreepStatus.leaving;
 			}
 			if (memory.status == CreepStatus.leaving && creep.pos.isNearTo(Game.getObjectById<Source>(memory.harvester.sourceId).pos)) {
@@ -55,7 +59,7 @@ class HarvestCreepManager extends CreepManager {
 			}
 			if (memory.status == CreepStatus.returning && creep.pos.isNearTo(Game.getObjectById<Spawn>(memory.harvester.sourceId).pos)) {
 				var result = creep.transferEnergy(Game.spawns[memory.harvester.spawnName]);
-				if (result == Result.OK) {memory.status = CreepStatus.leaving}
+				if (result == Result.OK) { memory.status = CreepStatus.leaving }
 			}
 			if (memory.status == CreepStatus.returning) {
 				var result = creep.moveByPath(memory.harvester.toSpawn)

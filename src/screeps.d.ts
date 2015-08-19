@@ -38,7 +38,7 @@ interface ConstructionSite {
 		* Remove the construction site.
 		* @returns Result Code: OK, ERR_NOT_OWNER
 		*/
-	remove(): Result;
+	remove(): number;
 }
 /**
 	* Creeps are your units. Creeps can move, harvest energy, construct structures, attack another creeps, and perform other actions.
@@ -114,44 +114,44 @@ interface Creep {
 		* Attack another creep or structure in a short-ranged attack. Needs the ATTACK body part. If the target is inside a rampart, then the rampart is attacked instead. The target has to be at adjacent square to the creep.
 		* @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART
 		*/
-	attack(target: Creep|Spawn|Structure): Result;
+	attack(target: Creep|Spawn|Structure): number;
 	/**
 		* Build a structure at the target construction site using carried energy. Needs WORK and CARRY body parts. The target has to be at adjacent square to the creep.
 		* @param target The target object to be attacked.
 		* @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART
 		*/
-	build(target: ConstructionSite): Result;
+	build(target: ConstructionSite): number;
 	/**
 		* Cancel the order given during the current game tick.
 		* @param methodName The name of a creep's method to be cancelled.
 		* @returns Result Code: OK, ERR_NOT_FOUND
 		*/
-	cancelOrder(methodName: string): Result;
+	cancelOrder(methodName: string): number;
 	/**
 		* Claim a neutral controller under your control. The target has to be at adjacent square to the creep.
 		* @param target The target controller object.
 		* @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_GCL_NOT_ENOUGH
 		*/
-	claimController(target: Structure): Result;
-	dropEnergy(amount?: number): Result
+	claimController(target: Structure): number;
+	dropEnergy(amount?: number): number
 	getActiveBodyparts(type: string): number;
-	harvest(target: Source): Result;
-	heal(target: Creep): Result;
-	move(direction: Direction) : Result;
-	moveByPath(path: PathStep[]): Result;
-	moveTo(x: number, y: number, opts?: MoveToOpts): Result;
-	moveTo(target: RoomPosition|{pos: RoomPosition}, opts?: MoveToOpts): Result;
-	notifyWhenAttacked(enabled: boolean): Result;
-	pickup(target: Energy): Result;
-	rangedAttack(target: Creep|Spawn|Structure): Result;
-	rangedHeal(target: Creep): Result;
-	rangedMassAttack(): Result;
-	repair(target: Spawn|Structure): Result;
-	say(message: string): Result;
-	suicide(): Result;
-	transferEnergy(target: Creep|Spawn|Structure, amount?: number): Result;
-	unclaimController(target: Structure): Result;
-	upgradeController(target: Structure): Result;
+	harvest(target: Source): number;
+	heal(target: Creep): number;
+	move(direction: Direction) : number;
+	moveByPath(path: PathStep[]): number;
+	moveTo(x: number, y: number, opts?: MoveToOpts): number;
+	moveTo(target: RoomPosition|{pos: RoomPosition}, opts?: MoveToOpts): number;
+	notifyWhenAttacked(enabled: boolean): number;
+	pickup(target: Energy): number;
+	rangedAttack(target: Creep|Spawn|Structure): number;
+	rangedHeal(target: Creep): number;
+	rangedMassAttack(): number;
+	repair(target: Spawn|Structure): number;
+	say(message: string): number;
+	suicide(): number;
+	transferEnergy(target: Creep|Spawn|Structure, amount?: number): number;
+	unclaimController(target: Structure): number;
+	upgradeController(target: Structure): number;
 }
 /**
 	* A dropped piece of energy. It will decay after a while if not picked up.
@@ -216,20 +216,20 @@ interface Flag {
 		* @param color One of the following constants: COLOR_WHITE, COLOR_GREY, COLOR_RED, COLOR_PURPLE, COLOR_BLUE, COLOR_CYAN, COLOR_GREEN, COLOR_YELLOW, COLOR_ORANGE, COLOR_BROWN
 		* @returns Result Code: OK, ERR_INVALID_ARGS
 		*/
-	setColor(color: string): Result;
+	setColor(color: string): number;
 	/**
 		* Set new position of the flag.
 		* @param x The X position in the room.
 		* @param y The Y position in the room.
 		* @returns Result Code: OK, ERR_INVALID_TARGET
 		*/
-	setPosition(x: number,y: number): Result;
+	setPosition(x: number,y: number): number;
 	/**
 		* Set new position of the flag.
 		* @param pos Can be a RoomPosition object or any object containing RoomPosition.
 		* @returns Result Code: OK, ERR_INVALID_TARGET
 		*/
-	setPosition(pos: RoomPosition|{pos: RoomPosition}): Result;
+	setPosition(pos: RoomPosition|{pos: RoomPosition}): number;
 }
 /**
 	* The main global game object containing all the gameplay information.
@@ -304,7 +304,7 @@ interface GameMap {
 		* Or one of the following Result codes:
 		* ERR_NO_PATH, ERR_INVALID_ARGS
 		*/
-	findExit(fromRoom: string|Room, toRoom: string|Room): string|Result;
+	findExit(fromRoom: string|Room, toRoom: string|Room): string|number;
 	/**
 		* Find route from the given room to another room.
 		* @param fromRoom Start room name or room object.
@@ -362,27 +362,27 @@ interface Room {
 		* @param structureType One of the following constants: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
 		* @returns Result Code: OK, ERR_INVALID_TARGET, ERR_INVALID_ARGS, ERR_RCL_NOT_ENOUGH
 		*/
-	createConstructionSite(x: number, y: number, structureType: string) : Result;
+	createConstructionSite(x: number, y: number, structureType: string) : number;
 	/**
 		* Create new ConstructionSite at the specified location.
 		* @param pos Can be a RoomPosition object or any object containing RoomPosition.
 		* @param structureType One of the following constants: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
 		* @returns Result Code: OK, ERR_INVALID_TARGET, ERR_INVALID_ARGS, ERR_RCL_NOT_ENOUGH
 		*/
-	createConstructionSite(pos: RoomPosition|{pos: RoomPosition}, structureType: string): Result;
+	createConstructionSite(pos: RoomPosition|{pos: RoomPosition}, structureType: string): number;
 	/**
 		* Create new Flag at the specified location.
 		* @param x The X position.
 		* @param y The Y position.
 		* @param name (optional) The name of a new flag. It should be unique, i.e. the Game.flags object should not contain another flag with the same name (hash key). If not defined, a random name will be generated.
 		*/
-	createFlag(x: number, y:number, name: string, color: string): Result;
+	createFlag(x: number, y:number, name: string, color: string): number;
 	/**
 		* Create new Flag at the specified location.
 		* @param pos Can be a RoomPosition object or any object containing RoomPosition.
 		* @param name (optional) The name of a new flag. It should be unique, i.e. the Game.flags object should not contain another flag with the same name (hash key). If not defined, a random name will be generated.
 		*/
-	createFlag(pos: RoomPosition|{pos: RoomPosition}, name: string, color: string): Result;
+	createFlag(pos: RoomPosition|{pos: RoomPosition}, name: string, color: string): number;
 	/**
 		* Find all objects of the specified type in the room.
 		* @param type One of the following constants:FIND_CREEPS, FIND_MY_CREEPS, FIND_HOSTILE_CREEPS, FIND_MY_SPAWNS, FIND_HOSTILE_SPAWNS, FIND_SOURCES, FIND_SOURCES_ACTIVE, FIND_DROPPED_ENERGY, FIND_STRUCTURES, FIND_MY_STRUCTURES, FIND_HOSTILE_STRUCTURES, FIND_FLAGS, FIND_CONSTRUCTION_SITES, FIND_EXIT_TOP, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM, FIND_EXIT_LEFT, FIND_EXIT
@@ -396,7 +396,7 @@ interface Room {
 		* @returns The room direction constant, one of the following: FIND_EXIT_TOP, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM, FIND_EXIT_LEFT
 		* Or one of the following error codes: ERR_NO_PATH, ERR_INVALID_ARGS
 		*/
-	findExitTo(room: string|Room): string|Result;
+	findExitTo(room: string|Room): string|number;
 	/**
 		* Find an optimal path inside the room between fromPos and toPos using A* search algorithm.
 		* @param fromPos The start position.
@@ -468,8 +468,8 @@ interface RoomPosition {
 	roomName: string;
 	x: number;
 	y: number;
-	createConstructionSite(structureType: string): Result;
-	createFlag(name: string, color: string): Result;
+	createConstructionSite(structureType: string): number;
+	createFlag(name: string, color: string): number;
 	findClosest<T>(type: number, opts?: {filter: any|string, algorithm: string}): T;
 	findClosest<T>(objects: [T|RoomPosition], opts?: {filter: any|string, algorithm: string}): T;
 	findClosestByRange<T>(type: number, opts?: {filter: any|string }): T;
@@ -512,11 +512,11 @@ interface Spawn {
 	room: Room;
 	structureType: string;
 	spawning: {name: string, needTime: number, remainingTime: number};
-	canCreateCreep(body: string[], name?: string): Result;
+	canCreateCreep(body: string[], name?: string): number;
 	createCreep(body: string[], name?: string, memory?: any): string|Result;
-	destroy(): Result;
-	notifyWhenAttacked(enabled: boolean): Result;
-	transferEnergy(target: Creep, amount?: number): Result;
+	destroy(): number;
+	notifyWhenAttacked(enabled: boolean): number;
+	transferEnergy(target: Creep, amount?: number): number;
 }
 interface Structure {
 	hits: number;
@@ -527,19 +527,19 @@ interface Structure {
 	pos: RoomPosition;
 	room: Room;
 	structureType: string;
-	destroy(): Result;
-	notifyWhenAttacked(enabled: boolean): Result;
+	destroy(): number;
+	notifyWhenAttacked(enabled: boolean): number;
 }
 interface Extension extends Structure {
 	energy: number;
 	energyCapacity: number;
-	transferEnergy(target: Creep, amount: number): Result;
+	transferEnergy(target: Creep, amount: number): number;
 }
 interface Link extends Structure {
 	cooldown: number;
 	energy: number;
 	energyCapacity: number;
-	transferEnergy(target: Creep|Link, amount: number): Result;
+	transferEnergy(target: Creep|Link, amount: number): number;
 }
 interface KeeperLair extends Structure {
 	ticksToSpawn: number;
@@ -562,7 +562,7 @@ interface Wall extends Structure {
 interface Storage extends Structure {
 	store: {energy: number };
 	storeCapacity: number;
-	transferEnergy(target: Creep, amount: number): Result;
+	transferEnergy(target: Creep, amount: number): number;
 }
 interface BodyPartDefinition {
 	type: string;
@@ -637,42 +637,6 @@ declare enum Direction {
 /**
 	* need 8,11,13
 	*/
-declare enum Result {
-	OK = 0,
-	ERR_NOT_OWNER = -1,
-	ERR_NO_PATH = -2,
-	ERR_NAME_EXISTS = -3,
-	ERR_BUSY = -4,
-	ERR_NOT_FOUND = -5,
-	ERR_NOT_ENOUGH_ENERGY = -6,
-	ERR_INVALID_TARGET = -7,
-	ERR_FULL = - 8,
-	ERR_NOT_IN_RANGE = -9,
-	ERR_INVALID_ARGS = -10,
-	ERR_TIRED = -11,
-	ERR_NO_BODYPART = -12,
-	ERR_RCL_NOT_ENOUGH = -14,
-	ERR_GCL_NOT_ENOUGH = -15
-}
-declare enum FindCode {
-	FIND_EXIT_TOP = 1,
-	FIND_EXIT_RIGHT = 3,
-	FIND_EXIT_BOTTOM = 5,
-	FIND_EXIT_LEFT = 7,
-	FIND_EXIT = 10,
-	FIND_CREEPS = 101,
-	FIND_MY_CREEPS = 102,
-	FIND_HOSTILE_CREEPS = 103,
-	FIND_SOURCES_ACTIVE = 104,
-	FIND_SOURCES = 105,
-	FIND_DROPPED_ENERGY = 106,
-	FIND_STRUCTURES = 107,
-	FIND_MY_STRUCTURES = 108,
-	FIND_HOSTILE_STRUCTURES = 109,
-	FIND_FLAGS = 110,
-	FIND_CONSTRUCTION_SITES = 111,
-	FIND_MY_SPAWNS = 112,
-	FIND_HOSTILE_SPAWNS = 113
-}
+
 declare var Game: Game;
 declare var Memory: any;

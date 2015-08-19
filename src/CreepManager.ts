@@ -6,7 +6,7 @@ class CreepManager {
 	}
 	static registerCreep(name: string) {
 		var memory = this.memory(name);
-		memory.role = Role.none
+		memory.role = CreepRole.none
 		memory.status = CreepStatus.idle;
 	}
 	/**
@@ -18,14 +18,15 @@ class CreepManager {
 		names.forEach(name => {
 			var memory = this.memory(name);
 			if (!memory) return;
-			if (!memory.role) {
-				this.registerCreep(name);
+			if (!_.isNumber(memory.role)) {
+				console.log("registering creep " + name);
+				CreepManager.registerCreep(name);
 			}
 		});
 	}
 }
 interface CreepMemory {
-	role: Role;
+	role: CreepRole;
 	status: CreepStatus;
 }
 enum CreepStatus {
@@ -33,4 +34,17 @@ enum CreepStatus {
 	returning,
 	leaving,
 	mining
+}
+enum CreepRole {
+	none,
+	harvester
+}
+class BodyParts {
+	static MOVE = "move";
+	static WORK = "work";
+	static CARRY = "carry";
+	static ATTACK = "attack";
+	static RANGED_ATTACK = "ranged_attack";
+	static TOUGH = "tough";
+	static HEAL = "heal";
 }
