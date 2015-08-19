@@ -1,3 +1,5 @@
+/// <reference path="_references.ts" />
+
 enum Status {
 	idle,
 	moving,

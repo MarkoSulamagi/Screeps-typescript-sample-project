@@ -5,14 +5,17 @@ var fs = require('fs');
 var secrets = require('./secrets.js')
 
 gulp.task('compile', function () {
-	var tsResult = gulp.src('src/**/*.ts')
+	var tsResult = gulp.src(['src/**/*.ts', 'typings/**/*.d.ts'])
 		.pipe(ts({
 			noImplicitAny: true,
+			noExternalResolve: true,
+			target: 'ES5',
+			module: 'commonjs',
 			out: 'main.js'
 		}));
 	return tsResult.js.pipe(gulp.dest('dist'));
 });
-gulp.task('upload-sim', function () {
+gulp.task('upload-sim', ['compile'], function () {
 	console.log(secrets);
 	var email = secrets.email,
 		password = secrets.password,
@@ -20,7 +23,6 @@ gulp.task('upload-sim', function () {
 			branch: 'dev',
 			modules: { main: fs.readFileSync('./dist/main.js', {encoding: "utf8"}) }
 		};
-	console.log(data);
 	var req = https.request({
 		hostname: 'screeps.com',
 		port: 443,
@@ -37,4 +39,4 @@ gulp.task('upload-sim', function () {
 	req.write(JSON.stringify(data));
 	req.end();
 })
-gulp.task('build', ['compile', 'upload-sim']);
+gulp.task('build', ['upload-sim']);

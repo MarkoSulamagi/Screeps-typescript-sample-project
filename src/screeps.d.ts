@@ -210,7 +210,7 @@ interface Flag {
 		* Remove the flag.
 		* @returns Result Code: OK
 		*/
-	remove();
+	remove(): void;
 	/**
 		* Set new color of the flag.
 		* @param color One of the following constants: COLOR_WHITE, COLOR_GREY, COLOR_RED, COLOR_PURPLE, COLOR_BLUE, COLOR_CYAN, COLOR_GREEN, COLOR_YELLOW, COLOR_ORANGE, COLOR_BROWN
@@ -248,9 +248,9 @@ interface Game {
 		*/
 	flags: HashTable<Flag>;
 	/**
-		* A global object representing world map.
+		* A global object representing world GameMap.
 		*/
-	map: Map;
+	Map: GameMap;
 	/**
 		* A hash containing all the rooms available to you with room names as hash keys.
 		*/
@@ -283,12 +283,12 @@ interface Game {
 		* @param message Custom text which will be sent in the message. Maximum length is 1000 characters.
 		* @param groupInterval If set to 0 (default), the notification will be scheduled immediately. Otherwise, it will be grouped with other notifications and mailed out later using the specified time in minutes.
 		*/
-	notify(message: string, groupInterval: number);
+	notify(message: string, groupInterval: number): void;
 }
 /**
-	* A global object representing world map. Use it to navigate between rooms. The object is accessible via Game.map property.
+	* A global object representing world GameMap. Use it to navigate between rooms. The object is accessible via Game.GameMap property.
 	*/
-interface Map {
+interface GameMap {
 	/**
 		* List all exits available from the room with the given name.
 		* @param roomName The room name.
@@ -512,11 +512,11 @@ interface Spawn {
 	room: Room;
 	structureType: string;
 	spawning: {name: string, needTime: number, remainingTime: number};
-	canCreateCreep(body: [string], name: string): Result;
-	createCreep(body: [string], name: string, memory: any): Result;
+	canCreateCreep(body: string[], name?: string): Result;
+	createCreep(body: string[], name?: string, memory?: any): string|Result;
 	destroy(): Result;
 	notifyWhenAttacked(enabled: boolean): Result;
-	transferEnergy(target: Creep, amount: number): Result;
+	transferEnergy(target: Creep, amount?: number): Result;
 }
 interface Structure {
 	hits: number;
