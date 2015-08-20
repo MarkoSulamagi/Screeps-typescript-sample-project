@@ -1,9 +1,9 @@
 /// <reference path="_references.ts" />
-/// <reference path="HarvestSpawnManager.ts" />
+/// <reference path="RoomManager.ts" />
 
 class SimulationGame {
 	static main() {
-		var spawnNames = _.keys(Game.spawns);
-		HarvestSpawnManager.main(spawnNames);
+		var roomNames = _.keys(Game.rooms);
+		RoomManager.main(roomNames);
 	}
 }

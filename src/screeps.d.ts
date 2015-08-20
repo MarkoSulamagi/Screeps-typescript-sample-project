@@ -389,7 +389,7 @@ interface Room {
 		* @param opts An object with additional options
 		* @returns An array with the objects found.
 		*/
-	find<T>(type: number, opts?: {filter: any|string}): [T];
+	find<T>(type: number, opts?: {filter: any|string}): T[];
 	/**
 		* Find the exit direction en route to another room.
 		* @param room Another room name or room object.
@@ -441,14 +441,14 @@ interface Room {
 		* @param y The Y position.
 		* @returns An array of objects of the given type at the specified position if found. 
 		*/
-	lookForAt<T>(type: string, x: number, y: number) : [T];
+	lookForAt<T>(type: string, x: number, y: number) : T[];
 	/**
 		* Get an object with the given type at the specified room position.
 		* @param type One of the following string constants: constructionSite, creep, energy, exit, flag, source, structure, terrain
 		* @param target Can be a RoomPosition object or any object containing RoomPosition.
 		* @returns An array of objects of the given type at the specified position if found. 
 		*/
-	lookForAt<T>(type: string, target: RoomPosition|{pos: RoomPosition}): [T];
+	lookForAt<T>(type: string, target: RoomPosition|{pos: RoomPosition}): T[];
 	/**
 		* Get the list of objects with the given type at the specified room area. This method is more CPU efficient in comparison to multiple lookForAt calls.
 		* @param type One of the following string constants: constructionSite, creep, energy, exit, flag, source, structure, terrain
@@ -474,8 +474,8 @@ interface RoomPosition {
 	findClosest<T>(objects: [T|RoomPosition], opts?: {filter: any|string, algorithm: string}): T;
 	findClosestByRange<T>(type: number, opts?: {filter: any|string }): T;
 	findClosestByRange<T>(objects: [T|RoomPosition], opts?: {filter: any|string }): T;
-	findInRange<T>(type: number, range: number, opts?: {filter: any|string, algorithm: string}): [T];
-	findInRange<T>(objects: [T|RoomPosition], range: number, opts?: {filter: any|string, algorithm: string}): [T];
+	findInRange<T>(type: number, range: number, opts?: {filter: any|string, algorithm: string}): T[];
+	findInRange<T>(objects: [T|RoomPosition], range: number, opts?: {filter: any|string, algorithm: string}): T[];
 	findPathTo(x: number, y: number, opts?: FindPathOpts): PathStep[];
 	findPathTo(target: RoomPosition|{pos: RoomPosition}, opts?: FindPathOpts): PathStep[];
 	getDirectionTo(x: number, y: number): number;
@@ -488,7 +488,7 @@ interface RoomPosition {
 	isNearTo(x: number, y: number): boolean;
 	isNearTo(target: RoomPosition|{pos: RoomPosition}): boolean;
 	look(): LookAtResult;
-	lookFor<T>(type: string): [T];
+	lookFor<T>(type: string): T[];
 }
 interface Source {
 	energy: number;
@@ -606,7 +606,7 @@ interface FindPathOpts {
 	ignoreCreeps?: boolean;
 	ignoreDestructibleStructures?: boolean;
 	ignore?: [any|RoomPosition];
-	avoid?: [any|RoomPosition];
+	avoid?: any[]|RoomPosition[];
 	maxOps?: number;
 	heuristicWeight?: number;
 }

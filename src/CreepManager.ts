@@ -2,7 +2,8 @@
 
 class CreepManager {
 	static memory(name: string): CreepMemory {
-		return Game.creeps[name].memory
+		var creep = Game.creeps[name]
+		return creep ? creep.memory : null;
 	}
 	static registerCreep(name: string) {
 		var memory = this.memory(name);

@@ -5,9 +5,13 @@
 class HarvestSpawnManager extends SpawnManager {
 	static registerSpawn(name: string) {
 		var memory = this.memory(name);
+		var spawn = Game.spawns[name];
+		var availableSourcePaths = _.filter(RoomManager.memory(spawn.room.name).harvestRoutes, route => {
+			return route.creepName = null;
+		}).length;
 		memory.castes.push({
 			name: "harvester",
-			quota: 3,
+			quota: availableSourcePaths,
 			blueprint: ["move", "work", "carry"],
 			children: []});
 	}

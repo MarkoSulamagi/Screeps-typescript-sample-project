@@ -3,7 +3,8 @@
 
 class SpawnManager {
 	static memory(name: string): SpawnMemory {
-		return Game.spawns[name].memory;
+		var spawn = Game.spawns[name]
+		return spawn ? spawn.memory : null;
 	}
 	static registerSpawn(name: string) {
 		var memory = this.memory(name);
