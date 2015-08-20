@@ -1,4 +1,4 @@
-enum Result {
+enum ResultCode {
 	OK = 0,
 	ERR_NOT_OWNER = -1,
 	ERR_NO_PATH = -2,

@@ -311,7 +311,7 @@ interface GameMap {
 		* @param toRoom Finish room name or room object.
 		* @returns the route array or ERR_NO_PATH code
 		*/
-	findRoute(fromRoom: string|Room, toRoom: string|Room): [{exit: string, room: string}]|Result;
+	findRoute(fromRoom: string|Room, toRoom: string|Room): [{exit: string, room: string}]|number;
 	/**
 		* Check if the room with the given name is protected by temporary "newbie" walls.
 		* @param roomName The room name.
@@ -513,7 +513,7 @@ interface Spawn {
 	structureType: string;
 	spawning: {name: string, needTime: number, remainingTime: number};
 	canCreateCreep(body: string[], name?: string): number;
-	createCreep(body: string[], name?: string, memory?: any): string|Result;
+	createCreep(body: string[], name?: string, memory?: any): string|number;
 	destroy(): number;
 	notifyWhenAttacked(enabled: boolean): number;
 	transferEnergy(target: Creep, amount?: number): number;
