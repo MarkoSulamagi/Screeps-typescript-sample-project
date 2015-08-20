@@ -15,29 +15,36 @@ class HarvestSpawnBehavior implements ISpawnBehavior {
 	constructor(private creepManager: CreepManager) {
 		this.role = CreepRole.harvester;
 		if (!Memory.harvestSpawnBehavior) {
-			Memory.harvestSpawnBehavior = { room: {}, roomCapacity: {} };
+			Memory.harvestSpawnBehavior = { room: {}, roomCapacity: {}, infants: [] };
 		}
 		this.memory = Memory.harvestSpawnBehavior;
 	}
 	getWeight(roomName: string) {
-		if(this.memory.room[roomName].length < 1) return .6;
+		if(!this.memory.room[roomName] ||this.memory.room[roomName].length < 1) return .6;
 		return .6 - this.memory.room[roomName].length / this.memory.roomCapacity[roomName]
 	}
 	main(name: string) {
 		var spawn = Game.spawns[name];
 		var room = spawn.room.name;
-		if (!this.memory.room[room].length) {
+		if (!this.memory.room[room] || !_.isNumber(this.memory.room[room].length)) {
 			this.memory.room[room] = [];
 		}
 		if (!_.isNumber(this.memory.roomCapacity[room])) {
 			this.memory.roomCapacity[room] = this.getHarvestSpots(room);
 		}
+		this.memory.infants.forEach(infant => {
+			var creep = Game.creeps[infant];
+			if (!creep || creep.spawning) return;
+			this.memory.infants.splice(this.memory.infants.indexOf(infant));
+			console.log(infant + " is all grown up");
+			this.creepManager.registerCreep(infant);
+			this.creepManager.applyBehavior(infant, CreepRole.harvester);
+		});
 		if (this.memory.room[room].length < this.memory.roomCapacity[room]) {
 			var result = spawn.createCreep(["carry", "work", "move"]);
 			if (_.isString(result)) {
 				var creepName: string = result.toString();
-				this.creepManager.registerCreep(creepName);
-				this.creepManager.applyBehavior(creepName, this.role);
+				this.memory.infants.push(creepName);
 				return ResultCode.OK;
 			}
 			var errorCode: ResultCode = +result;

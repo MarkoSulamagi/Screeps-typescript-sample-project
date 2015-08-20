@@ -14,7 +14,7 @@ class RoomManager {
 		}
 		this.managerMemory = Memory.roomManager;
 	}
-	registerRoom(name: string) {
+	private registerRoom(name: string) {
 		var memory = RoomManager.memory(name);
 		if (!memory) return;
 		memory.harvestRoutes = [];
@@ -26,8 +26,14 @@ class RoomManager {
 		memory.sources = _.pluck(sources, "id");
 		this.updateSourcePaths(name);
 		this.managerMemory.rooms.push(name);
+		console.log("registered room " + name);
 	}
 	main() {
+		if (this.managerMemory.rooms.length < 1) {
+			for (var roomName in Game.rooms) {
+				this.registerRoom(roomName);
+			}
+		}
 		this.managerMemory.rooms.forEach(name => {
 			var memory = RoomManager.memory(name);
 			if (!memory) return;
@@ -38,6 +44,7 @@ class RoomManager {
 			memory.spawns.forEach(spawnName => {
 				var spawn = Game.spawns[spawnName]
 				if (!spawn) {
+					console.log(spawnName + " no longer exits, removing from memory");
 					memory.spawns.splice(memory.spawns.indexOf(spawnName));
 				}
 			});
@@ -59,15 +66,12 @@ class RoomManager {
 					return route.sourceId == id
 				})
 					.map(route => {
-						console.log(route.harvestPos.x.toString() + route.harvestPos.y.toString());
 						return room.getPositionAt(
 							route.harvestPos.x,
 							route.harvestPos.y);
 					});
-				console.log("getting path to spawn");
 				var toSpawn = source.pos.findPathTo(spawn, { ignoreCreeps: true, avoid: avoid });
 				if (!toSpawn || toSpawn.length == 0) {
-					console.log("there are no more paths, this should be the end of the function");
 					morePaths = false;
 					break; 
 				}
@@ -76,8 +80,6 @@ class RoomManager {
 				var atSource = room.getPositionAt(toSpawn[0].x, toSpawn[0].y)
 				var toSource = atSpawn.findPathTo(atSource, { ignoreCreeps: true, avoid: avoid });
 				var existingRoute = _.find(memory.harvestRoutes, route => {
-					console.log(route.harvestPos.x.toString() + route.harvestPos.y.toString());
-					console.log(toSpawn[0].x.toString() + toSpawn[0].x.toString());
 					return route.harvestPos.x == toSpawn[0].x &&
 						route.harvestPos.y == toSpawn[0].y
 				});
@@ -87,7 +89,6 @@ class RoomManager {
 					existingRoute.toSource = toSource;
 				}
 				else {
-					console.log(toSpawn[0].x.toString() + toSpawn[0].x.toString());
 					memory.harvestRoutes.push({
 						sourceId: id,
 						spawnName: spawn.name,

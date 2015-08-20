@@ -11,29 +11,25 @@ class SpawnManager {
 		var harvest = harvestSpawnBehavior;
 		this.behaviors.push(harvest);
 		if (!Memory.spawnManager) {
-			Memory.spawnManager = { castes: [], role: {} };
-			var noneNum: number = CreepRole.none;
-			Memory.spawnManager.role[noneNum] = [];
-			var harvestNum: number = harvest.role;
-			Memory.spawnManager.role[harvestNum] = [];
+			Memory.spawnManager = { room: {} };
 		}
+		this.managerMemory = Memory.spawnManager;
 	}
 	registerSpawn(name: string) {
 		var spawn = Game.spawns[name];
-		if (!this.managerMemory.room[spawn.room.name].length) {
+		console.log("found the problem");
+		if (!this.managerMemory.room[spawn.room.name] || !_.isNumber(this.managerMemory.room[spawn.room.name].length)) {
 			this.managerMemory.room[spawn.room.name] = [];
 		}
+		console.log("nope not here");
 		this.managerMemory.room[spawn.room.name].push(name);
-	}
-	applyBehavior(name: string, role: CreepRole) {
-		
 	}
 	main() {
 		for (var room in Game.rooms) {
 			var roomSpawns = this.managerMemory.room[room]
-			if (!roomSpawns.length) return;
+			if (!roomSpawns ||!_.isNumber(roomSpawns.length)) return;
 			roomSpawns.forEach(name => {
-				if (Game.spawns[name]) {
+				if (!Game.spawns[name]) {
 					var roomSpawns = this.managerMemory.room[room];
 					roomSpawns.splice(roomSpawns.indexOf(name));
 				}
