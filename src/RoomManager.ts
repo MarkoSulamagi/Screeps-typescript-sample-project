@@ -1,6 +1,10 @@
 /// <reference path="_references.ts" />
 /// <reference path="SourceRoute.ts" />
 /// <reference path="Spawn/SpawnManager.ts" />
+/// <reference path="Creep/RoleRoomMemory.ts" />
+/// <reference path="SourceManager.ts" />
+
+
 
 class RoomManager {
 	private managerMemory: RoomManagerMemory;
@@ -8,39 +12,34 @@ class RoomManager {
 		var room = Game.rooms[name];
 		return room ? room.memory : null;
 	}
-	constructor(private spawnManager: SpawnManager) {
+	constructor(private spawnManager: SpawnManager, private sourceManager: SourceManager) {
 		if (!Memory.roomManager) {
 			Memory.roomManager = {rooms: []};
 		}
 		this.managerMemory = Memory.roomManager;
 	}
-	private registerRoom(name: string) {
+	registerRoom(name: string) {
+		var p0 = performance.now();
 		var memory = RoomManager.memory(name);
-		if (!memory) return;
-		memory.harvestRoutes = [];
+		if (!memory || memory.role) return;
+		memory.role = {};
+		for (var role in CreepRole) {
+			console.log("registering role " + role);
+			memory.role[role] = {creeps: [], infants: [], capacity: 0};
+		}
 		var room = Game.rooms[name];
+		memory.spawns = [];
 		var spawns = room.find<Spawn>(FindCode.FIND_MY_SPAWNS);
-		memory.spawns = _.pluck(spawns, "name");
-		memory.spawns.forEach(spawnName => this.spawnManager.registerSpawn(spawnName));
+		_.pluck(spawns, "name").forEach(spawnName => this.spawnManager.registerSpawn(spawnName));
+		memory.sources = [];
 		var sources = room.find<Source>(FindCode.FIND_SOURCES);
-		memory.sources = _.pluck(sources, "id");
-		this.updateSourcePaths(name);
+		_.pluck(sources, "id").forEach(source => this.sourceManager.registerSource(source));
 		this.managerMemory.rooms.push(name);
-		console.log("registered room " + name);
+		console.log("registered room " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	main() {
-		if (this.managerMemory.rooms.length < 1) {
-			for (var roomName in Game.rooms) {
-				this.registerRoom(roomName);
-			}
-		}
 		this.managerMemory.rooms.forEach(name => {
 			var memory = RoomManager.memory(name);
-			if (!memory) return;
-			if (!memory.sources || !memory.spawns || !memory.harvestRoutes) {
-				console.log("registering new room " + name);
-				this.registerRoom(name);
-			}
 			memory.spawns.forEach(spawnName => {
 				var spawn = Game.spawns[spawnName]
 				if (!spawn) {
@@ -48,64 +47,16 @@ class RoomManager {
 					memory.spawns.splice(memory.spawns.indexOf(spawnName));
 				}
 			});
-			this.spawnManager.main();
 		});
-	}
-	private updateSourcePaths(name: string) {
-		var memory = RoomManager.memory(name);
-		if (!memory.sources || memory.sources.length < 1) {
-			console.log("room " + name + " has no source data");
-		}
-		var room = Game.rooms[name];
-		memory.sources.forEach(id => {
-			var source = Game.getObjectById<Source>(id);
-			var spawn = source.pos.findClosest<Spawn>(FindCode.FIND_MY_SPAWNS);
-			var morePaths = true;
-			while (morePaths) {
-				var avoid = _.filter<SourceRoute>(memory.harvestRoutes, route => {
-					return route.sourceId == id
-				})
-					.map(route => {
-						return room.getPositionAt(
-							route.harvestPos.x,
-							route.harvestPos.y);
-					});
-				var toSpawn = source.pos.findPathTo(spawn, { ignoreCreeps: true, avoid: avoid });
-				if (!toSpawn || toSpawn.length == 0) {
-					morePaths = false;
-					break; 
-				}
-				toSpawn.pop();
-				var atSpawn = room.getPositionAt(toSpawn[toSpawn.length - 1].x, toSpawn[toSpawn.length - 1].y);
-				var atSource = room.getPositionAt(toSpawn[0].x, toSpawn[0].y)
-				var toSource = atSpawn.findPathTo(atSource, { ignoreCreeps: true, avoid: avoid });
-				var existingRoute = _.find(memory.harvestRoutes, route => {
-					return route.harvestPos.x == toSpawn[0].x &&
-						route.harvestPos.y == toSpawn[0].y
-				});
-				if (existingRoute) {
-					existingRoute.spawnName = spawn.name;
-					existingRoute.toSpawn = toSpawn;
-					existingRoute.toSource = toSource;
-				}
-				else {
-					memory.harvestRoutes.push({
-						sourceId: id,
-						spawnName: spawn.name,
-						creepName: null,
-						harvestPos: {x: toSpawn[0].x, y: toSpawn[0].y},
-						toSource: toSource,
-						toSpawn: toSpawn});
-				}
-			}
-		});
-
+		this.sourceManager.main();
+		this.spawnManager.main();
 	}
 }
 interface RoomMemory {
 	sources: string[];
 	spawns: string[];
-	harvestRoutes: SourceRoute[];
+	structures: string[];
+	role: {[role: number]: RoleRoomMemory};
 }
 interface RoomManagerMemory {
 	rooms: string[];

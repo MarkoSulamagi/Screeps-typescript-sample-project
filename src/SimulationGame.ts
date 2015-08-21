@@ -7,6 +7,7 @@ class SimulationGame {
 	creepManager: CreepManager;
 	harvestSpawnBehavior: HarvestSpawnBehavior;
 	spawnManager: SpawnManager;
+	sourceManager: SourceManager;
 	roomManager: RoomManager;
 	constructor() {
 		this.harvestCreepBehavior = new HarvestCreepBehavior();
@@ -14,7 +15,18 @@ class SimulationGame {
 		this.creepManager = new CreepManager(this.harvestCreepBehavior, this.combatCreepBehavior);
 		this.harvestSpawnBehavior = new HarvestSpawnBehavior(this.creepManager);
 		this.spawnManager = new SpawnManager(this.creepManager, this.harvestSpawnBehavior);
-		this.roomManager = new RoomManager(this.spawnManager);
+		this.sourceManager = new SourceManager();
+		this.roomManager = new RoomManager(this.spawnManager, this.sourceManager);
 	}
-	main() { this.roomManager.main(); }
+	main() {
+		var t0 = performance.now();
+		for (var roomName in Game.rooms) {
+			this.roomManager.registerRoom(roomName);
+		}
+		this.roomManager.main();
+		var t1 = performance.now();
+		if ((t1 - t0) > 10) {
+			console.log("expensive tick, time: " + (t1 - t0) + "ms");
+		}
+	}
 }

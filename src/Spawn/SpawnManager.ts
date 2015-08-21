@@ -5,32 +5,24 @@
 
 class SpawnManager {
 	private behaviors: ISpawnBehavior[];
-	private managerMemory: SpawnManagerMemory
 	constructor(private creepManager: CreepManager, harvestSpawnBehavior: HarvestSpawnBehavior) {
 		this.behaviors = [];
 		var harvest = harvestSpawnBehavior;
 		this.behaviors.push(harvest);
-		if (!Memory.spawnManager) {
-			Memory.spawnManager = { room: {} };
-		}
-		this.managerMemory = Memory.spawnManager;
 	}
 	registerSpawn(name: string) {
+		var p0 = performance.now();
 		var spawn = Game.spawns[name];
-		console.log("found the problem");
-		if (!this.managerMemory.room[spawn.room.name] || !_.isNumber(this.managerMemory.room[spawn.room.name].length)) {
-			this.managerMemory.room[spawn.room.name] = [];
-		}
-		console.log("nope not here");
-		this.managerMemory.room[spawn.room.name].push(name);
+		var global = RoomManager.memory(spawn.room.name);
+		global.spawns.push(name);
+		console.log("registered new spawn " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	main() {
 		for (var room in Game.rooms) {
-			var roomSpawns = this.managerMemory.room[room]
-			if (!roomSpawns ||!_.isNumber(roomSpawns.length)) return;
+			var roomSpawns = RoomManager.memory(room).spawns;
 			roomSpawns.forEach(name => {
 				if (!Game.spawns[name]) {
-					var roomSpawns = this.managerMemory.room[room];
+					console.log(name + " no longer exists, removing from memory");
 					roomSpawns.splice(roomSpawns.indexOf(name));
 				}
 				this.behaviors.forEach(behavior => behavior.main(name));
@@ -38,7 +30,4 @@ class SpawnManager {
 		}
 		this.creepManager.main();
 	}
-}
-interface SpawnManagerMemory {
-	room: { [name: string] : string[] };
 }

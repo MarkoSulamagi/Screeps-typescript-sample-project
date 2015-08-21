@@ -18,19 +18,18 @@ class HarvestCreepBehavior implements ICreepBehavior {
 	applyBehavior(name: string) {
 		var creep = Game.creeps[name];
 		if (!creep) return ResultCode.ERR_INVALID_ARGS;
-		var memory = CreepManager.memory(name);
 		if (creep.spawning) return ResultCode.ERR_BUSY;
-		memory.role = CreepRole.harvester;
 		var room = RoomManager.memory(creep.room.name);
-		var route = _.find(room.harvestRoutes, r => {
+		console.log(room);
+		var harvestRoutes = _.flatten(room.sources.map(source => SourceManager.memory(source).harvestRoutes));
+		var route = _.find(harvestRoutes, r => {
 			return r.creepName == null;
 		});
-		if (route) {
-			memory.route = route;
-			route.creepName = name;
-		} else {
-			memory.route = null;
-		}
+		if (!route) return ResultCode.ERR_NO_PATH;
+		var memory = CreepManager.memory(name);
+		memory.role = CreepRole.harvester;
+		memory.route = route;
+		route.creepName = name;
 		return ResultCode.OK;
 	}
 	main(name: string) {
@@ -38,6 +37,9 @@ class HarvestCreepBehavior implements ICreepBehavior {
 		var creep = Game.creeps[name];
 		if (memory.status == CreepStatus.idle && memory.route) {
 			memory.status = CreepStatus.leaving;
+		}
+		if (!memory.route){
+			console.log(name + " has no route!");
 		}
 		if (memory.status == CreepStatus.leaving &&
 			creep.pos.isEqualTo(
@@ -47,12 +49,15 @@ class HarvestCreepBehavior implements ICreepBehavior {
 			memory.status = CreepStatus.mining;
 		}
 		if (memory.status == CreepStatus.leaving) {
+			var p0 = performance.now();
 			var result = creep.moveByPath(memory.route.toSource)
 			if (result == ResultCode.ERR_NOT_FOUND) {
-				console.log(creep.name + " is not on path and is moving expensively, error code: " + result);
-				return creep.moveTo(creep.room.getPositionAt(
+				var direction = creep.pos.getDirectionTo(creep.room.getPositionAt(
 					memory.route.toSource[0].x,
 					memory.route.toSource[0].y));
+				var manualMoveResult = creep.move(direction);
+				console.log(creep.name + " is moving " + direction + " towards path, error code: " + result + ", time: " + (performance.now() - p0) + "ms");
+				return manualMoveResult;
 			}
 			return result;
 		}
@@ -70,13 +75,16 @@ class HarvestCreepBehavior implements ICreepBehavior {
 		if (memory.status == CreepStatus.returning) {
 			var result = creep.moveByPath(memory.route.toSpawn)
 			if (result == ResultCode.ERR_NOT_FOUND) {
-				console.log(creep.name + " is not on path and is moving expensively, error code: " + result);
-				return creep.moveTo(creep.room.getPositionAt(
+				var p0 = performance.now();
+				var manualMoveResult = creep.moveTo(creep.room.getPositionAt(
 					memory.route.toSpawn[0].x,
 					memory.route.toSpawn[0].y));
+				console.log(creep.name + " is moving to path, error code: " + result + ", time: " + (performance.now() - p0) + "ms");
+				return manualMoveResult;
 			}
 			return result;
 		}
+		console.log(name + " is in a broken state");
 	}
 }
 interface CreepMemory {
