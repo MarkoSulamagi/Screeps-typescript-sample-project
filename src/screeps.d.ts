@@ -81,7 +81,7 @@ interface Creep {
 	/**
 		* A shorthand to Memory.creeps[creep.name]. You can use it for quick access the creep’s specific memory data object.
 		*/
-	memory: any;
+	memory: CreepMemory;
 	/**
 		* Whether it is your creep or foe.
 		*/
@@ -189,7 +189,7 @@ interface Flag {
 	/**
 		* A shorthand to Memory.flags[flag.name]. You can use it for quick access the flag's specific memory data object.
 		*/
-	memory: any;
+	memory: FlagMemory;
 	/**
 		* Flag’s name. You can choose the name while creating a new flag, and it cannot be changed later. This name is a hash key to access the spawn via the Game.flags object.
 		*/
@@ -337,7 +337,7 @@ interface Room {
 	/**
 		* A shorthand to Memory.rooms[room.name]. You can use it for quick access the room’s specific memory data object.
 		*/
-	memory: any;
+	memory: RoomMemory;
 	/**
 		* One of the following constants:
 		* MODE_SIMULATION, MODE_SURVIVAL, MODE_WORLD, MODE_ARENA
@@ -504,7 +504,7 @@ interface Spawn {
 	hits: number;
 	hitsMax: number;
 	id: string;
-	memory: any;
+	memory: SpawnMemory;
 	my: boolean;
 	name: string;
 	owner: Owner;
@@ -624,6 +624,16 @@ interface PathStep {
 	dy: number;
 	direction: string;
 }
+interface Memory {
+	creeps: {[name: string]: CreepMemory};
+	flags: {[name: string]: FlagMemory};
+	rooms: {[name: string]: RoomMemory};
+	spawns: {[name: string]: SpawnMemory};
+}
+interface CreepMemory { }
+interface FlagMemory { }
+interface RoomMemory { }
+interface SpawnMemory { }
 declare enum Direction {
 	TOP = 1,
 	TOP_RIGHT = 2,
@@ -639,4 +649,4 @@ declare enum Direction {
 	*/
 
 declare var Game: Game;
-declare var Memory: any;
+declare var Memory: Memory;

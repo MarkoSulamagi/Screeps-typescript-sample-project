@@ -1,33 +1,24 @@
-/// <reference path="_references.ts" />
+/// <reference path="../_references.ts" />
 class SourceManager {
 	constructor() {
-		if (!Memory.source) {
-			Memory.source = {};
-		}
-	}
-	static memory(id: string): SourceMemory {
-		return Memory.source[id];
+		Memory.sources = {};
 	}
 	registerSource(id: string) {
+		Memory.sources[id] = { harvestRoutes: [], isPlotted: false, forbidden: false };
 		var source = Game.getObjectById<Source>(id);
-		if (!source) return;
-		var memory = SourceManager.memory(id);
-		if (!memory) {
-			Memory.source[id] = { harvestRoutes: [], isPlotted: false, forbidden: false };
-		}
-		RoomManager.memory(source.room.name).sources.push(id);
+		Memory.rooms[source.room.name].sources.push(id);
 	}
 	main() {
 		for (var roomName in Game.rooms) {
-			var roomMemory = RoomManager.memory(roomName);
+			var roomMemory = Memory.rooms[roomName];
 			var sources = roomMemory.sources;
-			var needsPlot = _.find(sources, source => !SourceManager.memory(source).isPlotted);
+			var needsPlot = _.find(sources, source => !Memory.sources[source].isPlotted);
 			if (needsPlot) {
 				var newPath = this.updatePath(needsPlot);
 				if (newPath) {
-					SourceManager.memory(needsPlot).harvestRoutes.push(newPath);
-					roomMemory.role[CreepRole.harvester].capacity = _.sum(_.map(sources, source => {
-						var memory = SourceManager.memory(source);
+					Memory.sources[needsPlot].harvestRoutes.push(newPath);
+					roomMemory.capacity[CreepRole.harvester] = _.sum(_.map(sources, source => {
+						var memory = Memory.sources[source];
 						return memory.harvestRoutes.length;
 					}));
 				}
@@ -35,7 +26,7 @@ class SourceManager {
 				return;
 			}
 			var needsUpdate = _.find(sources.map(source => {
-				var memory = SourceManager.memory(source);
+				var memory = Memory.sources[source];
 				return _.find(memory.harvestRoutes, route => route.needsUpdate);
 			}), route => route);
 			if (needsUpdate) {
@@ -64,7 +55,7 @@ class SourceManager {
 		else route = target;
 		var id = route.sourceId;
 		var source = Game.getObjectById<Source>(id);
-		var memory = SourceManager.memory(id);
+		var memory = Memory.sources[id];
 		var room = source.room;
 		var avoid = memory.harvestRoutes.map(avoidRoute => {
 			return room.getPositionAt(
@@ -92,8 +83,20 @@ class SourceManager {
 		return route;
 	}
 }
+interface Memory {
+	sources: {[id: string]: SourceMemory}
+}
 interface SourceMemory {
 	harvestRoutes: SourceRoute[];
 	isPlotted: boolean;
 	forbidden: boolean;
+}
+interface SourceRoute {
+	sourceId: string;
+	spawnName: string;
+	creepName: string;
+	needsUpdate: boolean;
+	harvestPos: { x: number, y: number }
+	toSource: PathStep[];
+	toSpawn: PathStep[];
 }
