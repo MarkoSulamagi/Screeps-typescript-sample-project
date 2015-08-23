@@ -1,32 +1,23 @@
-/// <reference path="../Spawn/ICaste.ts" />
-
-
+/// <reference path="../Castes/ICaste.ts" />
 class CreepManager {
 	constructor(public castes: ICaste[]) { }
 	initializeRoom(roomName: string) {
 		var roomMemory = Memory.rooms[roomName];
 		roomMemory.creeps = {};
-		this.castes.forEach(caste => { roomMemory.creeps[caste.role] = [] });
+		this.castes.forEach(caste => roomMemory.creeps[caste.role] = []);
 	}
 	registerCreep(name: string) {
 		var p0 = performance.now();
-		var memory = Memory.creeps[name];
-		var creep = Game.creeps[name];
-		memory.role = _.isNumber(memory.role) ? memory.role : CreepRole.none
-		memory.status = CreepStatus.idle;
-		var roleNum: number = memory.role;
-		var global = Memory.rooms[creep.room.name].creeps[roleNum];
-		global.push(name);
+		Memory.creeps[name] = {role: CreepRole.none, status: CreepStatus.idle};
 		console.log("registered creep " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	applyBehavior(name: string, role: CreepRole) {
 		var p0 = performance.now();
 		var creep = Game.creeps[name];
-		var behavior = _.find(this.castes, { "role": role });
-		var currentRoleNum: number = creep.memory.role;
-		var roleCreeps = Memory.rooms[creep.room.name].creeps[currentRoleNum];
+		var behavior = _.find(this.castes, caste => caste.role == role);
+		var roleCreeps = Memory.rooms[creep.room.name].creeps[creep.memory.role];
 		behavior.applyBehavior(name);
-		roleCreeps.splice(roleCreeps.indexOf(name));
+		if (roleCreeps) roleCreeps.splice(roleCreeps.indexOf(name));
 		var newRoleCreeps = Memory.rooms[creep.room.name].creeps[role];
 		newRoleCreeps.push(name);
 	}
@@ -48,8 +39,6 @@ class CreepManager {
 						casteCreeps.splice(casteCreeps.indexOf(creepName));
 						return;
 					}
-					var creepMemory = Memory.creeps[creepName];
-					if (!_.isNumber(creepMemory.role)) this.registerCreep(creepName);
 					behavior.main(creepName);
 				});
 			}

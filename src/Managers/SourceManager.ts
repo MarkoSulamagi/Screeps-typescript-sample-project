@@ -1,7 +1,9 @@
 /// <reference path="../_references.ts" />
 class SourceManager {
 	constructor() {
-		Memory.sources = {};
+		if (Memory.sources === undefined) {
+			Memory.sources = {};
+		}
 	}
 	registerSource(id: string) {
 		Memory.sources[id] = { harvestRoutes: [], isPlotted: false, forbidden: false };
@@ -9,7 +11,7 @@ class SourceManager {
 		Memory.rooms[source.room.name].sources.push(id);
 	}
 	main() {
-		for (var roomName in Game.rooms) {
+		for (var roomName in Memory.rooms) {
 			var roomMemory = Memory.rooms[roomName];
 			var sources = roomMemory.sources;
 			var needsPlot = _.find(sources, source => !Memory.sources[source].isPlotted);
@@ -84,7 +86,7 @@ class SourceManager {
 	}
 }
 interface Memory {
-	sources: {[id: string]: SourceMemory}
+	sources: { [id: string]: SourceMemory }
 }
 interface SourceMemory {
 	harvestRoutes: SourceRoute[];

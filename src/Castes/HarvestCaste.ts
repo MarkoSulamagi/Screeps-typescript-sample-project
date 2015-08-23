@@ -5,23 +5,28 @@
 /// <reference path="ICaste.ts" />
 
 class HarvestCaste implements ICaste {
-	role = CreepRole.harvester;
-	minimumCost = 200;
-	baseWeight = 1;
+	role: CreepRole;
+	minimumCost: number;
+	baseWeight: number;
+	constructor() {
+		this.role = CreepRole.harvester;
+		this.minimumCost = 200;
+		this.baseWeight = 1;
+	}
 	getBlueprint(energy: number) {
 		if (energy < 200) return null;
 		var blueprint = ["move", "carry", "work"];
 		energy = energy - 200;
 		while(energy >= 50) {
-			if (energy > 50) {
+			if (energy >= 50) {
 				blueprint.push("move");
 				energy = energy - 50;
 			}
-			if (energy > 50) {
+			if (energy >= 50) {
 				blueprint.push("carry");
 				energy = energy - 50;
 			}
-			if (energy > 100) {
+			if (energy >= 100) {
 				blueprint.push("work");
 				energy = energy - 100
 			}
@@ -46,8 +51,8 @@ class HarvestCaste implements ICaste {
 		return ResultCode.OK;
 	}
 	disposeBehavior(roomName: string, name: string) {
-		var room = RoomManager.memory(roomName);
-		var harvestRoutes = _.flatten(room.sources.map(source => SourceManager.memory(source).harvestRoutes));
+		var roomMemory = Memory.rooms[roomName];
+		var harvestRoutes = _.flatten(roomMemory.sources.map(source => Memory.sources[source].harvestRoutes));
 		var route = _.find(harvestRoutes, r => {
 			return r.creepName == name;
 		});
@@ -56,57 +61,58 @@ class HarvestCaste implements ICaste {
 		return ResultCode.OK;
 	}
 	main(name: string) {
-		var memory = CreepManager.memory(name);
+		var creepMemory = Memory.creeps[name];
 		var creep = Game.creeps[name];
-		if (memory.status == CreepStatus.idle && memory.route) {
-			memory.status = CreepStatus.leaving;
+		if (creepMemory.status == CreepStatus.idle && creepMemory.route) {
+			creepMemory.status = CreepStatus.leaving;
 		}
-		if (!memory.route){
+		if (!creepMemory.route){
 			console.log(name + " has no route!");
 		}
-		if (memory.status == CreepStatus.leaving &&
+		if (creepMemory.status == CreepStatus.leaving &&
 			creep.pos.isEqualTo(
 				creep.room.getPositionAt(
-					memory.route.harvestPos.x,
-					memory.route.harvestPos.y))) {
-			memory.status = CreepStatus.mining;
+					creepMemory.route.harvestPos.x,
+					creepMemory.route.harvestPos.y))) {
+			creepMemory.status = CreepStatus.mining;
 		}
-		if (memory.status == CreepStatus.leaving) {
+		if (creepMemory.status == CreepStatus.leaving) {
 			var p0 = performance.now();
-			var result = creep.moveByPath(memory.route.toSource)
+			var result = creep.moveByPath(creepMemory.route.toSource)
 			if (result == ResultCode.ERR_NOT_FOUND) {
 				var manualMoveResult = creep.moveTo(creep.room.getPositionAt(
-					memory.route.toSource[0].x,
-					memory.route.toSource[0].y));
+					creepMemory.route.toSource[0].x,
+					creepMemory.route.toSource[0].y));
 				console.log(creep.name + " is moving towards path, error code: " + result + ", time: " + (performance.now() - p0) + "ms");
 				return manualMoveResult;
 			}
 			return result;
 		}
-		if (memory.status == CreepStatus.mining && creep.carry.energy >= creep.carryCapacity) {
-			memory.status = CreepStatus.returning;
+		if (creepMemory.status == CreepStatus.mining && creep.carry.energy >= creep.carryCapacity) {
+			creepMemory.status = CreepStatus.returning;
 		}
-		if (memory.status == CreepStatus.mining) {
-			return creep.harvest(Game.getObjectById<Source>(memory.route.sourceId));
+		if (creepMemory.status == CreepStatus.mining) {
+			return creep.harvest(Game.getObjectById<Source>(creepMemory.route.sourceId));
 		}
-		if (memory.status == CreepStatus.returning && creep.pos.isNearTo(Game.spawns[memory.route.spawnName].pos)) {
-			var result = creep.transferEnergy(Game.spawns[memory.route.spawnName]);
-			if (result == ResultCode.OK) { memory.status = CreepStatus.leaving }
+		if (creepMemory.status == CreepStatus.returning && creep.pos.isNearTo(Game.spawns[creepMemory.route.spawnName].pos)) {
+			var result = creep.transferEnergy(Game.spawns[creepMemory.route.spawnName]);
+			if (result == ResultCode.OK) { creepMemory.status = CreepStatus.leaving }
 			return result;
 		}
-		if (memory.status == CreepStatus.returning) {
-			var result = creep.moveByPath(memory.route.toSpawn)
+		if (creepMemory.status == CreepStatus.returning) {
+			var result = creep.moveByPath(creepMemory.route.toSpawn)
 			if (result == ResultCode.ERR_NOT_FOUND) {
 				var p0 = performance.now();
 				var manualMoveResult = creep.moveTo(creep.room.getPositionAt(
-					memory.route.toSpawn[0].x,
-					memory.route.toSpawn[0].y));
+					creepMemory.route.toSpawn[0].x,
+					creepMemory.route.toSpawn[0].y));
 				console.log(creep.name + " is moving to path, error code: " + result + ", time: " + (performance.now() - p0) + "ms");
 				return manualMoveResult;
 			}
 			return result;
 		}
 		console.log(name + " is in a broken state");
+		return ResultCode.OK;
 	}
 }
 interface CreepMemory {

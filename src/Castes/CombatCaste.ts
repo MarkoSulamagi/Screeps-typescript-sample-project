@@ -1,28 +1,33 @@
 /// <reference path="../_references.ts" />
-/// <reference path="../Creep/CreepRole.ts" />
 /// <reference path="../Managers/CreepManager.ts" />
 /// <reference path="ICaste.ts" />
 
 
 
 class CombatCaste implements ICaste {
-	role = CreepRole.combat;
-	minimumCost = 130;
-	baseWeight = .6;
+	role: CreepRole;
+	minimumCost: number;
+	baseWeight: number;
+	constructor() {
+		this.role = CreepRole.combat;
+		this.minimumCost = 130;
+		this.baseWeight = .6;
+	}
 	getBlueprint(energy: number) {
 		if(energy < 130) return null;
 		var blueprint = ["move", "attack"];
 		energy = energy - 130;
-		while(energy > 50) {
-			if (energy > 50) {
+		while(energy >= 50) {
+			if (energy >= 50) {
 				blueprint.push("move");
 				energy = energy - 50;
 			}
-			if (energy > 80) {
+			if (energy >= 80) {
 				blueprint.push("attack");
 				energy = energy - 80;
 			}
 		}
+		return blueprint;
 	}
 	applyBehavior(name: string) {
 		var creep = Game.creeps[name];
