@@ -3,7 +3,7 @@ interface RoomPosition {
 	isObstructed(ignoreCreeps?: boolean): boolean;
 	findPathableAround(ignoreCreeps?: boolean): RoomPosition[];
 }
-RoomPosition.isObstructed = function(ignoreCreeps?: boolean) {
+RoomPosition.prototype.isObstructed = function(ignoreCreeps?: boolean) {
 	var lookAt: LookAtResult = this.lookAt();
 	return lookAt.type === "constructionSite" ||
 		lookAt.type === "exit" ||
@@ -14,7 +14,7 @@ RoomPosition.isObstructed = function(ignoreCreeps?: boolean) {
 		lookAt.terrain !== "normal" &&
 		lookAt.terrain !== "swamp"
 }
-RoomPosition.findPathableAround = function(ignoreCreeps?: boolean) {
+RoomPosition.prototype.findPathableAround = function(ignoreCreeps?: boolean) {
 	var pos: RoomPosition = this;
 	var room = Game.rooms[pos.roomName];
 	var pathableTiles: RoomPosition[] = [];
