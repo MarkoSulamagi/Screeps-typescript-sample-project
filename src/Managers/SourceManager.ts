@@ -60,6 +60,7 @@ class SourceManager {
 		var source = Game.getObjectById<Source>(id);
 		var memory = Memory.sources[id];
 		var room = source.room;
+		var locations = source.pos.findPathableAround(true);
 		var avoid = memory.harvestRoutes.map(avoidRoute => {
 			return room.getPositionAt(
 				avoidRoute.harvestPos.x,

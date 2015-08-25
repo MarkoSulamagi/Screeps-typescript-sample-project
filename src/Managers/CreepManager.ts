@@ -1,6 +1,18 @@
 /// <reference path="../Castes/ICaste.ts" />
 class CreepManager {
-	constructor(public castes: ICaste[]) { }
+	castes: {[role: number]: ICaste}
+	constructor(castes: ICaste[]) {
+		this.castes = {};
+		castes.forEach(caste => {this.castes[caste.role] = caste});
+		var casteMemory = Memory.castes;
+		if (!casteMemory) casteMemory = {};
+		for (var caste in this.castes) {
+			if (castes.hasOwnProperty(caste)) {
+				var element = this.castes[caste];
+				
+			}
+		}(caste => Memory.castes[caste.role] = []);
+	}
 	initializeRoom(roomName: string) {
 		var roomMemory = Memory.rooms[roomName];
 		roomMemory.creeps = {};
@@ -8,7 +20,7 @@ class CreepManager {
 	}
 	registerCreep(name: string) {
 		var p0 = performance.now();
-		Memory.creeps[name] = {role: CreepRole.none, status: CreepStatus.idle, route: null};
+		Memory.creeps[name] = { role: CreepRole.none, status: CreepStatus.idle, route: null };
 		console.log("registered creep " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	applyBehavior(name: string, role: CreepRole) {
@@ -27,23 +39,23 @@ class CreepManager {
 	 * @returns returns the list of objects that are still spawning, not creeps, or that don't have a status of spawning
 	 */
 	main() {
-		this.castes.forEach(behavior => {
-			var roleNum: number = behavior.role;
-			for (var roomName in Game.rooms) {
-				var casteCreeps = Memory.rooms[roomName].creeps[roleNum];
-				casteCreeps.forEach(creepName => {
-					var creep = Game.creeps[creepName];
-					if (!creep) {
-						console.log(creepName + " no longer exits, removing from memory");
-						behavior.disposeBehavior(roomName, creepName);
-						casteCreeps.splice(casteCreeps.indexOf(creepName));
-						return;
-					}
-					behavior.main(creepName);
-				});
-			}
-		});
+		for (var caste in Memory.castes) {
+			Memory.castes[caste].forEach(creepName => {
+				var creep = Game.creeps[creepName];
+				if (!creep) {
+					var memory = Memory.creeps[creepName];
+					this.castes.disposeBehavior(roomName, creepName);
+					casteCreeps.splice(casteCreeps.indexOf(creepName));
+					console.log(creepName + " no longer exits, removing from memory");
+					return;
+				}
+				behavior.main(creepName);
+			});
+		}
 	}
+}
+interface Memory {
+	castes: { [role: number]: string[] };
 }
 interface CreepMemory {
 	role: CreepRole;
