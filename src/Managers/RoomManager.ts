@@ -1,21 +1,31 @@
 /// <reference path="../_references.ts" />
 /// <reference path="SpawnManager.ts" />
 /// <reference path="SourceManager.ts" />
+/// <reference path="StructureManager.ts" />
 
 
 
 class RoomManager {
-	constructor(private spawnManager: SpawnManager, private sourceManager: SourceManager) { }
+	private ticksToAverage = 50;
+	constructor(private spawnManager: SpawnManager, private sourceManager: SourceManager, private structureManager: StructureManager) { }
 	private registerRoom(name: string) {
 		var p0 = performance.now();
-		var roomMemory: any = {};
+		Memory.rooms[name] = {
+			tickEnergy: [],
+			energyPerTick: 0,
+			spawns: [],
+			sources: [],
+			hostiles: null,
+			structures: null,
+			infants: null,
+			capacity: null,
+			creeps: null
+
+		}
+		var roomMemory = Memory.rooms[name];
 		var room = Game.rooms[name];
-		roomMemory.spawns = [];
-		var spawns = room.find<Spawn>(FindCode.FIND_MY_SPAWNS);
-		roomMemory.sources = [];
-		var sources = room.find<Source>(FindCode.FIND_SOURCES);
-		var structures: string[] = [];
-		roomMemory.structures = structures;
+		var spawns = room.find<Spawn>(FIND_MY_SPAWNS);
+		var sources = room.find<Source>(FIND_SOURCES);
 		Memory.rooms[name] = roomMemory;
 		this.spawnManager.initializeRoom(name);
 		_.pluck(sources, "id").forEach(source => this.sourceManager.registerSource(source));
@@ -23,27 +33,19 @@ class RoomManager {
 		console.log("registered room " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	main() {
-		for (var roomName in Game.rooms) {
-			var memory = Memory.rooms[roomName];
-			if (!memory) {
-				console.log("needs to register room")
-				this.registerRoom(roomName);
-				break;
-			}
-			memory.spawns.forEach(spawnName => {
-				var spawn = Game.spawns[spawnName]
-				if (!spawn) {
-					console.log(spawnName + " no longer exists, removing from memory");
-					memory.spawns.splice(memory.spawns.indexOf(spawnName));
-				}
-			});
-		}
 		this.sourceManager.main();
+		this.structureManager.main();
 		this.spawnManager.main();
 	}
 }
 interface RoomMemory {
+	tickEnergy: number[];
+	energyPerTick: number;
 	sources: string[];
 	spawns: string[];
-	structures: string[];
+	hostiles: DefenceMemory[];
+	structures: { [type: string]: string[] }
+	infants: { [role: number]: string[] }
+	capacity: { [role: number]: number }
+	creeps: { [role: number]: string[] }
 }

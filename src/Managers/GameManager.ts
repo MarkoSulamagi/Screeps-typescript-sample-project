@@ -11,6 +11,7 @@ class GameManager {
 	creepManager: CreepManager;
 	spawnManager: SpawnManager;
 	sourceManager: SourceManager;
+	structureManager: StructureManager
 	roomManager: RoomManager;
 	constructor() {
 		this.harvestCaste = new HarvestCaste();
@@ -19,7 +20,8 @@ class GameManager {
 		this.creepManager = new CreepManager([this.harvestCaste, this.combatCaste, this.builderCaste]);
 		this.spawnManager = new SpawnManager(this.creepManager);
 		this.sourceManager = new SourceManager();
-		this.roomManager = new RoomManager(this.spawnManager, this.sourceManager);
+		this.structureManager = new StructureManager
+		this.roomManager = new RoomManager(this.spawnManager, this.sourceManager, this.structureManager);
 	}
 	main() {
 		this.roomManager.main();

@@ -13,9 +13,6 @@ class DefenceManager {
 		
 	}
 }
-interface RoomMemory {
-	hostiles: DefenceMemory[];
-}
 interface DefenceMemory {
 	name: string;
 	counters: ICaste[];

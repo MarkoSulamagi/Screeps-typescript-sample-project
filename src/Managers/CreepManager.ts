@@ -8,7 +8,7 @@ class CreepManager {
 	}
 	registerCreep(name: string) {
 		var p0 = performance.now();
-		Memory.creeps[name] = {role: CreepRole.none, status: CreepStatus.idle};
+		Memory.creeps[name] = {role: CreepRole.none, status: CreepStatus.idle, route: null};
 		console.log("registered creep " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	applyBehavior(name: string, role: CreepRole) {
@@ -45,21 +45,10 @@ class CreepManager {
 		});
 	}
 }
-interface RoomMemory {
-	creeps: { [role: number]: string[] }
-}
 interface CreepMemory {
 	role: CreepRole;
 	status: CreepStatus;
-}
-class BodyParts {
-	static MOVE = "move";
-	static WORK = "work";
-	static CARRY = "carry";
-	static ATTACK = "attack";
-	static RANGED_ATTACK = "ranged_attack";
-	static TOUGH = "tough";
-	static HEAL = "heal";
+	route: SourceRoute;
 }
 enum CreepRole {
 	none,

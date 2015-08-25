@@ -1,7 +1,6 @@
 /// <reference path="../_references.ts" />
 /// <reference path="../Managers/CreepManager.ts" />
 /// <reference path="../Managers/RoomManager.ts" />
-
 /// <reference path="ICaste.ts" />
 
 class HarvestCaste implements ICaste {
@@ -15,19 +14,19 @@ class HarvestCaste implements ICaste {
 	}
 	getBlueprint(energy: number) {
 		if (energy < 200) return null;
-		var blueprint = ["move", "carry", "work"];
+		var blueprint = [MOVE, CARRY, WORK];
 		energy = energy - 200;
 		while(energy >= 50) {
 			if (energy >= 50) {
-				blueprint.push("move");
+				blueprint.push(MOVE);
 				energy = energy - 50;
 			}
 			if (energy >= 50) {
-				blueprint.push("carry");
+				blueprint.push(CARRY);
 				energy = energy - 50;
 			}
 			if (energy >= 100) {
-				blueprint.push("work");
+				blueprint.push(WORK);
 				energy = energy - 100
 			}
 		}
@@ -35,20 +34,20 @@ class HarvestCaste implements ICaste {
 	}
 	applyBehavior(name: string) {
 		var creep = Game.creeps[name];
-		if (!creep) return ResultCode.ERR_INVALID_ARGS;
-		if (creep.spawning) return ResultCode.ERR_BUSY;
+		if (!creep) return ERR_INVALID_ARGS;
+		if (creep.spawning) return ERR_BUSY;
 		var roomMemory = Memory.rooms[creep.room.name];
 		var harvestRoutes = _.flatten(roomMemory.sources.map(source => Memory.sources[source].harvestRoutes));
 		var route = _.find(harvestRoutes, r => {
 			return r.creepName == null;
 		});
-		if (!route) return ResultCode.ERR_NO_PATH;
+		if (!route) return ERR_NO_PATH;
 		var creepMemory = Memory.creeps[name];
 		creepMemory.role = CreepRole.harvester;
 		creepMemory.route = route;
 		route.creepName = name;
 		console.log("applied harvester behavior to " + name);
-		return ResultCode.OK;
+		return OK;
 	}
 	disposeBehavior(roomName: string, name: string) {
 		var roomMemory = Memory.rooms[roomName];
@@ -58,7 +57,7 @@ class HarvestCaste implements ICaste {
 		});
 		if (route) route.creepName = null;
 		console.log("removed harvester behavior from " + name);
-		return ResultCode.OK;
+		return OK;
 	}
 	main(name: string) {
 		var creepMemory = Memory.creeps[name];
@@ -79,7 +78,7 @@ class HarvestCaste implements ICaste {
 		if (creepMemory.status == CreepStatus.leaving) {
 			var p0 = performance.now();
 			var result = creep.moveByPath(creepMemory.route.toSource)
-			if (result == ResultCode.ERR_NOT_FOUND) {
+			if (result == ERR_NOT_FOUND) {
 				var manualMoveResult = creep.moveTo(creep.room.getPositionAt(
 					creepMemory.route.toSource[0].x,
 					creepMemory.route.toSource[0].y));
@@ -96,12 +95,12 @@ class HarvestCaste implements ICaste {
 		}
 		if (creepMemory.status == CreepStatus.returning && creep.pos.isNearTo(Game.spawns[creepMemory.route.spawnName].pos)) {
 			var result = creep.transferEnergy(Game.spawns[creepMemory.route.spawnName]);
-			if (result == ResultCode.OK) { creepMemory.status = CreepStatus.leaving }
+			if (result == OK) { creepMemory.status = CreepStatus.leaving }
 			return result;
 		}
 		if (creepMemory.status == CreepStatus.returning) {
 			var result = creep.moveByPath(creepMemory.route.toSpawn)
-			if (result == ResultCode.ERR_NOT_FOUND) {
+			if (result == ERR_NOT_FOUND) {
 				var p0 = performance.now();
 				var manualMoveResult = creep.moveTo(creep.room.getPositionAt(
 					creepMemory.route.toSpawn[0].x,
@@ -112,9 +111,6 @@ class HarvestCaste implements ICaste {
 			return result;
 		}
 		console.log(name + " is in a broken state");
-		return ResultCode.OK;
+		return OK;
 	}
-}
-interface CreepMemory {
-	route: SourceRoute
 }

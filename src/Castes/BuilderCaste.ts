@@ -16,31 +16,31 @@ class BuilderCaste implements ICaste {
 	}
 	getBlueprint(energy: number) {
 		if (energy < 200) return null;
-		var blueprint = ["move", "carry", "work"];
+		var blueprint = [MOVE, CARRY, WORK];
 		energy = energy - 200;
 		while(energy >= 50) {
 			if (energy >= 50) {
-				blueprint.push("move");
+				blueprint.push(MOVE);
 				energy = energy - 50;
 			}
 			if (energy >= 50) {
-				blueprint.push("carry");
+				blueprint.push(CARRY);
 				energy = energy - 50;
 			}
 			if (energy >= 100) {
-				blueprint.push("work");
+				blueprint.push(WORK);
 				energy = energy - 100
 			}
 		}
 		return blueprint;
 	}
 	applyBehavior(name: string) {
-		return ResultCode.OK;
+		return OK;
 	}
 	disposeBehavior(name: string) {
-		return ResultCode.OK;
+		return OK;
 	}
 	main(name: string) {
-		return ResultCode.OK;
+		return OK;
 	}
 }

@@ -1,4 +1,5 @@
-/// <reference path="../_references.ts" />
+/// <reference path="RoomManager.ts" />
+
 class SourceManager {
 	constructor() {
 		if (Memory.sources === undefined) {
@@ -67,7 +68,7 @@ class SourceManager {
 		if (route.harvestPos) {
 			avoid.splice(_.findIndex(avoid, avoidRoute => avoidRoute == route.harvestPos));
 		}
-		var spawn = source.pos.findClosest<Spawn>(FindCode.FIND_MY_SPAWNS);
+		var spawn = source.pos.findClosest<Spawn>(FIND_MY_SPAWNS);
 		var toSpawn = source.pos.findPathTo(spawn, { ignoreCreeps: true, avoid: avoid });
 		if (!toSpawn || toSpawn.length == 0) {
 			memory.isPlotted = true;

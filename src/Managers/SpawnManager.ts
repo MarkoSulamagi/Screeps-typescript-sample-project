@@ -55,18 +55,14 @@ class SpawnManager {
 						roomMemory.infants[caste.role].push(creepName);
 						console.log("spawning new creep " + creepName + ", time: " + (performance.now() - p0) + "ms");
 						console.log(caste.role + " pop in " + room + " at " + (roomMemory.creeps[caste.role].length + roomMemory.infants[caste.role].length) + " out of " + roomMemory.capacity[caste.role]);
-						return ResultCode.OK;
+						return OK;
 					}
-					var errorCode: ResultCode = +result;
+					var errorCode: number = +result;
 					return errorCode;
 				}
-				return ResultCode.OK;
+				return OK;
 			});
 		}
 		this.creepManager.main();
 	}
-}
-interface RoomMemory {
-	infants: { [role: number]: string[] }
-	capacity: { [role: number]: number }
 }

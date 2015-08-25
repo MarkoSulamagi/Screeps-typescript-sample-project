@@ -15,15 +15,15 @@ class CombatCaste implements ICaste {
 	}
 	getBlueprint(energy: number) {
 		if(energy < 130) return null;
-		var blueprint = ["move", "attack"];
+		var blueprint = [MOVE, ATTACK];
 		energy = energy - 130;
 		while(energy >= 50) {
 			if (energy >= 50) {
-				blueprint.push("move");
+				blueprint.push(MOVE);
 				energy = energy - 50;
 			}
 			if (energy >= 80) {
-				blueprint.push("attack");
+				blueprint.push(ATTACK);
 				energy = energy - 80;
 			}
 		}
@@ -31,21 +31,21 @@ class CombatCaste implements ICaste {
 	}
 	applyBehavior(name: string) {
 		var creep = Game.creeps[name];
-		if (!creep) { return ResultCode.ERR_INVALID_ARGS; }
+		if (!creep) { return ERR_INVALID_ARGS; }
 		var memory = Memory.creeps[name];
 		memory.role = CreepRole.combat;
 		console.log("applied combat behavior to " + name);
-		return ResultCode.OK;
+		return OK;
 	}
 	disposeBehavior(name: string) {
 		console.log("removed combat behavior from " + name);
-		return ResultCode.OK;
+		return OK;
 	}
 	main(name: string) {
 		var memory = Memory.creeps[name];
 		var creep = Game.creeps[name];
-		var enemies = creep.room.find<Creep>(FindCode.FIND_HOSTILE_CREEPS);
-		if (!_.isNumber(enemies.length)) return ResultCode.OK;
+		var enemies = creep.room.find<Creep>(FIND_HOSTILE_CREEPS);
+		if (!_.isNumber(enemies.length)) return OK;
 		return creep.moveTo(enemies.pop());
 	}
 }
