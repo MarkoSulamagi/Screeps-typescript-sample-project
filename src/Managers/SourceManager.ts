@@ -12,10 +12,8 @@ class SourceManager {
 		Memory.rooms[source.room.name].sources.push(id);
 	}
 	main() {
-		for (var roomName in Memory.rooms) {
-			var roomMemory = Memory.rooms[roomName];
-			var sources = roomMemory.sources;
-			var needsPlot = _.find(sources, source => !Memory.sources[source].isPlotted);
+		for (var sourceId in Memory.sources) {
+			var source = Game.getObjectById<Source>(sourceId);
 			if (needsPlot) {
 				var newPath = this.updatePath(needsPlot);
 				if (newPath) {
@@ -86,21 +84,4 @@ class SourceManager {
 		route.toSpawn = toSpawn;
 		return route;
 	}
-}
-interface Memory {
-	sources: { [id: string]: SourceMemory }
-}
-interface SourceMemory {
-	harvestRoutes: SourceRoute[];
-	isPlotted: boolean;
-	forbidden: boolean;
-}
-interface SourceRoute {
-	sourceId: string;
-	spawnName: string;
-	creepName: string;
-	needsUpdate: boolean;
-	harvestPos: { x: number, y: number }
-	toSource: PathStep[];
-	toSpawn: PathStep[];
 }

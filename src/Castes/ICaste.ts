@@ -1,3 +1,5 @@
+/// <reference path="../_references.ts" />
+
 interface ICaste {
 	role: CreepRole;
 	baseWeight: number;

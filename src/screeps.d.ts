@@ -854,7 +854,7 @@ interface PathStep {
 	dx: number;
 	y: number;
 	dy: number;
-	direction: string;
+	direction: number;
 }
 interface Memory {
 	creeps: {[name: string]: CreepMemory};
@@ -873,9 +873,9 @@ interface SpawnMemory { }
 declare var Game: Game;
 declare var Memory: Memory;
 
-declare var Creep: {prototype: Creep}
-declare var Room: {prototype: Room}
-declare var RoomPosition: RoomPosition;
-declare var Source: {prototype: Source}
-declare var Spawn: {prototype: Spawn}
-declare var Structure: {prototype: Structure}
+declare var Creep: Creep;
+declare var Room: Room;
+declare var RoomPosition: RoomPosition
+declare var Source: Source;
+declare var Spawn: Spawn;
+declare var Structure: Structure;

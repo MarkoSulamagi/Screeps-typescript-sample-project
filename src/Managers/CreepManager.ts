@@ -13,11 +13,6 @@ class CreepManager {
 			}
 		}(caste => Memory.castes[caste.role] = []);
 	}
-	initializeRoom(roomName: string) {
-		var roomMemory = Memory.rooms[roomName];
-		roomMemory.creeps = {};
-		this.castes.forEach(caste => roomMemory.creeps[caste.role] = []);
-	}
 	registerCreep(name: string) {
 		var p0 = performance.now();
 		Memory.creeps[name] = { role: CreepRole.none, status: CreepStatus.idle, route: null };
@@ -26,12 +21,10 @@ class CreepManager {
 	applyBehavior(name: string, role: CreepRole) {
 		var p0 = performance.now();
 		var creep = Game.creeps[name];
-		var behavior = _.find(this.castes, caste => caste.role == role);
-		var roleCreeps = Memory.rooms[creep.room.name].creeps[creep.memory.role];
-		behavior.applyBehavior(name);
+		var roleCreeps = Memory.castes[creep.memory.role];
+		this.castes[role].applyBehavior(name);
 		if (roleCreeps) roleCreeps.splice(roleCreeps.indexOf(name));
-		var newRoleCreeps = Memory.rooms[creep.room.name].creeps[role];
-		newRoleCreeps.push(name);
+		Memory.castes[role].push(name);
 	}
 	/**
 	 * Checks input id list for creeps that have spawning status but are finished
@@ -44,7 +37,8 @@ class CreepManager {
 				var creep = Game.creeps[creepName];
 				if (!creep) {
 					var memory = Memory.creeps[creepName];
-					this.castes.disposeBehavior(roomName, creepName);
+					var casteCreeps = Memory.castes[memory.role];
+					this.castes[memory.role].disposeBehavior(creepName);
 					casteCreeps.splice(casteCreeps.indexOf(creepName));
 					console.log(creepName + " no longer exits, removing from memory");
 					return;
@@ -56,23 +50,4 @@ class CreepManager {
 }
 interface Memory {
 	castes: { [role: number]: string[] };
-}
-interface CreepMemory {
-	role: CreepRole;
-	status: CreepStatus;
-	route: SourceRoute;
-}
-enum CreepRole {
-	none,
-	harvester,
-	combat,
-	builder
-}
-enum CreepStatus {
-	idle,
-	building,
-	returning,
-	leaving,
-	mining,
-	attacking
 }

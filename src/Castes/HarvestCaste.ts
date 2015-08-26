@@ -49,7 +49,7 @@ class HarvestCaste implements ICaste {
 		console.log("applied harvester behavior to " + name);
 		return OK;
 	}
-	disposeBehavior(roomName: string, name: string) {
+	disposeBehavior(name: string) {
 		var roomMemory = Memory.rooms[roomName];
 		var harvestRoutes = _.flatten(roomMemory.sources.map(source => Memory.sources[source].harvestRoutes));
 		var route = _.find(harvestRoutes, r => {
