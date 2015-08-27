@@ -4,7 +4,7 @@ interface RoomPosition {
 	getId(): string;
 	isObstructed(ignoreCreeps?: boolean): boolean;
 	findPathableAround(ignoreCreeps?: boolean): RoomPosition[];
-	cachePathTo(target: RoomPosition|{ pos: RoomPosition }): PathStep[];
+	fastPathTo(target: RoomPosition|{ pos: RoomPosition }|string): PathStep[];
 	getDirectionPos(direction: number): RoomPosition;
 }
 RoomPosition.prototype.getId = function() {
@@ -37,7 +37,7 @@ RoomPosition.prototype.findPathableAround = function(ignoreCreeps?: boolean) {
 	}
 	return pathableTiles;
 }
-RoomPosition.prototype.cachePathTo = function(target: any, opts?: FindPathOpts) {
+RoomPosition.prototype.fastPathTo = function(target: any, opts?: FindPathOpts) {
 	var src: RoomPosition = this;
 	var dest: RoomPosition = target.pos ? target.pos : target;
 	var path = Memory.paths[src.getId() + dest.getId()]

@@ -234,6 +234,7 @@ declare var TERRAIN_MASK_LAVA: number;
 	* A site of a structure which is currently under construction.
 	*/
 interface ConstructionSite {
+	prototype: ConstructionSite;
 	/**
 		* A unique object identificator. You can use Game.getObjectById method to retrieve an object instance by its id.
 		*/
@@ -276,6 +277,7 @@ interface ConstructionSite {
 	* Creeps are your units. Creeps can move, harvest energy, construct structures, attack another creeps, and perform other actions.
 	*/
 interface Creep {
+	prototype: Creep;
 	/**
 		* An array describing the creep’s body. Each element contains the following properties:
 		* type: string
@@ -389,6 +391,7 @@ interface Creep {
 	* A dropped piece of energy. It will decay after a while if not picked up.
 	*/
 interface Energy {
+	prototype: Energy;
 	/**
 		* The amount of energy containing.
 		*/
@@ -410,6 +413,7 @@ interface Energy {
 	* A flag. Flags can be used to mark particular spots in a room. Flags are visible to their owners only.
 	*/
 interface Flag {
+	prototype: Energy;
 	/**
 		* A unique object identificator. You can use Game.getObjectById method to retrieve an object instance by its id.
 		*/
@@ -467,6 +471,7 @@ interface Flag {
 	* The main global game object containing all the gameplay information.
 	*/
 interface Game {
+	prototype: Game;
 	/**
 		* An amount of available CPU time at the current game tick.
 		*/
@@ -521,6 +526,7 @@ interface Game {
 	* A global object representing world GameMap. Use it to navigate between rooms. The object is accessible via Game.GameMap property.
 	*/
 interface GameMap {
+	prototype: GameMap;
 	/**
 		* List all exits available from the room with the given name.
 		* @param roomName The room name.
@@ -554,6 +560,7 @@ interface GameMap {
 	* An object representing the room in which your units and structures are in. It can be used to look around, find paths, etc. Every object in the room contains its linked Room instance in the room property.
 	*/
 interface Room {
+	prototype: Room;
 	/**
 		* The Controller structure of this room, if present, otherwise undefined.
 		*/
@@ -696,6 +703,7 @@ interface Room {
 	* An object representing the specified position in the room. Every object in the room contains RoomPosition as the pos property. The position object of a custom location can be obtained using the Room.getPositionAt() method or using the constructor.
 	*/
 interface RoomPosition {
+	prototype: RoomPosition;
 	new(x: number, y: number, roomName: string): RoomPosition;
 	roomName: string;
 	x: number;
@@ -723,6 +731,7 @@ interface RoomPosition {
 	lookFor<T>(type: string): T[];
 }
 interface Source {
+	prototype: Source;
 	energy: number;
 	energyCapacity: number;
 	id: string;
@@ -731,6 +740,7 @@ interface Source {
 	ticksToRegeneration: number;
 }
 interface Spawn {
+	prototype: Spawn;
 	energy: number;
 	energyCapacity: number;
 	hits: number;
@@ -751,6 +761,7 @@ interface Spawn {
 	transferEnergy(target: Creep, amount?: number): number;
 }
 interface Structure {
+	prototype: Structure;
 	hits: number;
 	hitsMax: number;
 	id: string;
@@ -866,9 +877,6 @@ interface CreepMemory { }
 interface FlagMemory { }
 interface RoomMemory { }
 interface SpawnMemory { }
-/**
-	* need 8,11,13
-	*/
 
 declare var Game: Game;
 declare var Memory: Memory;

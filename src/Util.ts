@@ -1,10 +1,10 @@
 /// <reference path="_references.ts" />
 
 class Util {
-	getBlueprintCost(blueprint: string[]) {
+	static getBlueprintCost(blueprint: string[]) {
 		return _.sum(blueprint.map(bodyPart => BODYPART_COST[bodyPart]));
 	}
-	reversePath(path: PathStep[]) {
+	static reversePath(path: PathStep[]) {
 		return path.reverse().forEach(step => {
 			step.dx *= -1;
 			step.dy *= -1;
