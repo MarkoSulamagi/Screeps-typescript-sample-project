@@ -1,7 +1,8 @@
 /// <reference path="../_references.ts" />
-/// <reference path="../Managers/CreepManager.ts" />
+/// <reference path="../Managers/CasteManager.ts" />
 /// <reference path="../Managers/SpawnManager.ts" />
 /// <reference path="ICaste.ts" />
+/// <reference path="../Util.ts" />
 
 
 
@@ -41,6 +42,24 @@ class BuilderCaste implements ICaste {
 		return OK;
 	}
 	main(name: string) {
+		_.forOwn(Memory.construction, (siteMemory, id) => {
+			var site = Game.getObjectById<ConstructionSite>(id);
+			
+		})
 		return OK;
 	}
+}
+interface Memory {
+	builders: {[name: string]: BuilderMemory}
+}
+interface BuilderMemory {
+	status: BuilderStatus;
+	target: string;
+	structureType: string;
+}
+enum BuilderStatus {
+	idle,
+	building,
+	resupplying,
+	repairing
 }

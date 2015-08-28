@@ -657,13 +657,13 @@ interface Room {
 		* @param y The Y position.
 		* @returns An array with objects at the specified position
 		*/
-	lookAt(x: number, y: number): LookAtResult;
+	lookAt(x: number, y: number): LookAtResult[];
 	/**
 		* Get the list of objects at the specified room position.
 		* @param target Can be a RoomPosition object or any object containing RoomPosition.
 		* @returns An array with objects at the specified position
 		*/
-	lookAt(target: RoomPosition|{pos: RoomPosition}) : LookAtResult;
+	lookAt(target: RoomPosition|{pos: RoomPosition}) : LookAtResult[];
 	/**
 		* Get the list of objects at the specified room area. This method is more CPU efficient in comparison to multiple lookAt calls.
 		* @param top The top Y boundary of the area.
@@ -727,7 +727,7 @@ interface RoomPosition {
 	isEqualTo(target: RoomPosition|{pos: RoomPosition}): boolean;
 	isNearTo(x: number, y: number): boolean;
 	isNearTo(target: RoomPosition|{pos: RoomPosition}): boolean;
-	look(): LookAtResult;
+	look(): LookAtResult[];
 	lookFor<T>(type: string): T[];
 }
 interface Source {

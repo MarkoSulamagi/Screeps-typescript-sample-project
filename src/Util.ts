@@ -1,4 +1,6 @@
 /// <reference path="_references.ts" />
+/// <reference path="Castes/ICaste.ts" />
+
 
 class Util {
 	static getBlueprintCost(blueprint: string[]) {
@@ -37,5 +39,12 @@ class Util {
 					break;
 			}
 		});
+	}
+	static isCastPopulated(role: number): boolean {
+		var casteMemory = Memory.castes[role];
+		return (casteMemory.creeps.length + casteMemory.infants.length) < casteMemory.popLimit;
+	}
+	static areAllCastsPopulated(): boolean {
+		return _.values<CasteMemory>(Memory.castes).some(caste => (caste.creeps.length + caste.infants.length) < caste.popLimit)
 	}
 }

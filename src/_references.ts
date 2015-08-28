@@ -3,3 +3,4 @@
 /// <reference path="Creep.ts" />
 /// <reference path="Source.ts" />
 /// <reference path="RoomPosition.ts" />
+/// <reference path="ConstructionSite.ts" />

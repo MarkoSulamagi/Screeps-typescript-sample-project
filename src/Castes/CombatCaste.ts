@@ -1,5 +1,5 @@
 /// <reference path="../_references.ts" />
-/// <reference path="../Managers/CreepManager.ts" />
+/// <reference path="../Managers/CasteManager.ts" />
 /// <reference path="ICaste.ts" />
 
 

@@ -4,7 +4,7 @@
 
 
 class DefenceManager {
-	constructor(private roomManager: RoomManager, private creepManager: CreepManager) {}
+	constructor(private roomManager: RoomManager, private casteManager: CasteManager) {}
 	registerDefence(roomName: string) {
 		var roomMemory = Memory.rooms[roomName];
 		roomMemory.hostiles = [];

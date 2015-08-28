@@ -15,15 +15,12 @@ interface Memory {
 	sources: {[id: string]: SourceMemory}
 }
 interface SourceMemory {
-	harvestRoutes: SourceRoute[];
+	miningNodes: MiningNode[];
 	isPlotted: boolean;
 	forbidden: boolean;
 }
-interface SourceRoute {
+interface MiningNode {
 	sourceId: string;
-	spawnName: string;
+	posId: string;
 	creepName: string;
-	needsUpdate: boolean;
-	toSource: PathStep[];
-	toSpawn: PathStep[];
 }

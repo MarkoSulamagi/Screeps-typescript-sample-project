@@ -1,30 +1,39 @@
 /// <reference path="../Castes/HarvestCaste.ts" />
 /// <reference path="../Castes/CombatCaste.ts" />
 /// <reference path="../Castes/BuilderCaste.ts" />
-/// <reference path="CreepManager.ts" />
+/// <reference path="CasteManager.ts" />
 /// <reference path="RoomManager.ts" />
 /// <reference path="SpawnManager.ts" />
+/// <reference path="PathingManager.ts" />
+
 class GameManager {
+	pathingManager: PathingManager
 	harvestCaste: HarvestCaste;
 	combatCaste: CombatCaste;
 	builderCaste: BuilderCaste;
-	creepManager: CreepManager;
+	casteManager: CasteManager;
 	spawnManager: SpawnManager;
 	sourceManager: SourceManager;
 	structureManager: StructureManager
 	roomManager: RoomManager;
 	constructor() {
+		this.pathingManager = new PathingManager();
 		this.harvestCaste = new HarvestCaste();
 		this.combatCaste = new CombatCaste();
 		this.builderCaste = new BuilderCaste();
-		this.creepManager = new CreepManager([this.harvestCaste, this.combatCaste, this.builderCaste]);
-		this.spawnManager = new SpawnManager(this.creepManager);
+		this.casteManager = new CasteManager([this.harvestCaste, this.combatCaste, this.builderCaste]);
+		this.spawnManager = new SpawnManager(this.casteManager);
 		this.sourceManager = new SourceManager();
 		this.structureManager = new StructureManager
 		this.roomManager = new RoomManager(this.spawnManager, this.sourceManager, this.structureManager);
 	}
 	main() {
+		this.pathingManager.main();
 		this.roomManager.main();
+		this.sourceManager.main();
+		this.structureManager.main();
+		this.spawnManager.main();
+		this.casteManager.main();
 	}
 }
 interface Memory {

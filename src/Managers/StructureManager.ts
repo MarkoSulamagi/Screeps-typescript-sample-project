@@ -13,10 +13,6 @@ class StructureManager {
 		Memory.rooms[structure.room.name].structures[structure.structureType].push(id);
 	}
 	main() {
-		for (var roomName in Memory.rooms) {
-			var room = Game.rooms[roomName];
-			var roomMemory = room.memory;
-			
-		}
+		
 	}
 }

@@ -10,6 +10,7 @@ class RoomManager {
 	constructor(private spawnManager: SpawnManager, private sourceManager: SourceManager, private structureManager: StructureManager) { }
 	private registerRoom(name: string) {
 		var p0 = performance.now();
+		if (Memory.rooms == null) Memory.rooms = {};
 		Memory.rooms[name] = {
 			tickEnergy: [],
 			energyPerTick: 0,
@@ -22,20 +23,26 @@ class RoomManager {
 			creeps: null
 
 		}
-		var roomMemory = Memory.rooms[name];
 		var room = Game.rooms[name];
 		var spawns = room.find<Spawn>(FIND_MY_SPAWNS);
 		var sources = room.find<Source>(FIND_SOURCES);
-		Memory.rooms[name] = roomMemory;
-		this.spawnManager.initializeRoom(name);
 		_.pluck(sources, "id").forEach(source => this.sourceManager.registerSource(source));
 		_.pluck(spawns, "name").forEach(spawnName => this.spawnManager.registerSpawn(spawnName));
+		var lairs = room.find<Structure>(FIND_HOSTILE_STRUCTURES).filter(struct => struct.structureType === STRUCTURE_KEEPER_LAIR);
+		lairs.forEach(lair => {
+			var source = lair.pos.findClosest<Source>(FIND_SOURCES);
+			source.getMemory().forbidden = true;
+			Memory.castes[CreepRole.harvester].popLimit -= source.getMemory().miningNodes.length;
+			console.log(source.id + " is forbidden because it is too close to a keeper lair");
+		});
+		Memory.castes[CreepRole.builder].popLimit = 2;
 		console.log("registered room " + name + ", time: " + (performance.now() - p0) + "ms");
 	}
 	main() {
-		this.sourceManager.main();
-		this.structureManager.main();
-		this.spawnManager.main();
+		_.forOwn(Game.rooms, room => {
+			if (room.controller.owner.username == "GreatGloop" &&
+				Memory.rooms[room.name] == null) this.registerRoom(room.name); 
+		});
 	}
 }
 interface RoomMemory {
