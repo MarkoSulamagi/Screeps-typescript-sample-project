@@ -44,7 +44,7 @@ class SpawnManager {
 		if (caste == null) return;
 		if ((casteMemory.creeps.length + casteMemory.infants.length) < casteMemory.popLimit) {
 			var p0 = performance.now();
-			var result = spawn.createCreep(caste.getBlueprint(spawn.energy));
+			var result = spawn.createCreep(caste.blueprint(spawn.energy));
 			if (_.isString(result)) {
 				var creepName: string = result.toString();
 				casteMemory.infants.push(creepName);

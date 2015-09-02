@@ -1,14 +1,22 @@
 /// <reference path="SourceManager.ts" />
 
 class RoadManager {
-	registerPath(steps: PathStep[]) {
-		
+	constructor() {
+		if (Memory.roads == null) Memory.roads = {};
+	}
+	buildRoad(path: Path) {
+		var roadMemory: string[] = [];
+		path.steps.forEach(step => {
+			path.
+		})
 	}
 	main() {
 		
 	}
 }
+interface Memory {
+	roads: {[id: string]: RoadMemory}
+}
 interface RoadMemory {
-	room: string;
 	roads: string[];
 }
