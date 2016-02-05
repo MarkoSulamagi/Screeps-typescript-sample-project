@@ -16,7 +16,7 @@ gulp.task('upload-sim', ['compile'], function () {
     var email = secrets.email,
         password = secrets.password,
         data = {
-            branch: 'dev',
+            branch: 'default',
             modules: { main: fs.readFileSync('./dist/main.js', { encoding: "utf8" }) }
         };
     var req = https.request({
