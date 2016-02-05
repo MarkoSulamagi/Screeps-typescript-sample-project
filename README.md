@@ -1,2 +1,0 @@
-# screeps
-screeps scripts
