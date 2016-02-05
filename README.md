@@ -1,19 +1,6 @@
-rename scripts file
-enter your username and password
-
-
-
 # Screeps typescript skeleton project
 
 This is a Screeps' project skeleton for Typescript programmers. The skeleton is based on vanhouc's work: https://github.com/vanhouc/screeps. 
-
-Skeleton includes everything you need to get up and running as quickly as possible. 
-
-* GULP watch script
-* TSProject transpiling from Typescript to Javascript
-* GULP script for automatic uploading the code to Screep's account
-* TS Interfaces for Screep's API
-* Lo-Dash typing TS interfaces
 
 Screeps is MMO strategy open world game for programmers. You write real JavaScript (in this case Typescript) which controls your units autonomously.
 
@@ -21,23 +8,28 @@ Read more: https://screeps.com/
 
 ## Getting Started
 
-This skeleton is cross platform. You can easily run the project with Jetbrains PHPStorm or use it in your VStudio. TS->JS compiling is done by TSProject: https://www.npmjs.com/package/tsproject.
+This skeleton is cross platform. You can easily run the project with Jetbrains PHPStorm or use it in your VStudio. TS->JS compiling is done by TSProject.
+
+Skeleton includes everything you need to get up and running as quickly as possible. 
+
+* GULP script for automatic uploading the code to Screep's account
+* TSProject transpiling from Typescript to Javascript
+* TS interfaces for Screep's API
+* TS interfaces for Lo-Dash API
 
 ### Prerequisities
 
 Required dependencies:
 
 ```
-- NodeJS https://nodejs.org/en/
+NodeJS https://nodejs.org/en/
 - `npm` command available in your CLI
-- GIT
-- `git` command available in your CLI (if you want to follow these instructions. 
 ```
 
 Optional dependencies (only if you want to follow these installation instructions fully): 
 
 ```
-- GIT https://git-scm.com/
+GIT https://git-scm.com/
 - `git` command available in your CLI (if you want to follow these instructions) 
 ```
 
@@ -69,7 +61,7 @@ $ npm start
 
 Now every time you edit your typescript files, main.js in ./dist folder is uploaded to your Screep scripts into "default" branch.
 
-Project files are in ./src. About folders and files:
+Project files are in ./src.
 
 ```
 ./src/main.ts - Application bootstrap. Don't change this file
@@ -96,8 +88,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Authors
 
 * **Cameron VanHouzen** - *Initial work* - [vanhouc](https://github.com/vanhouc)
-
-* **Marko Sulamägi** - *Converted Cameron's work to quick TS skeleton app* - [MarkoSulamagi](https://github.com/MarkoSulamagi)
+* **Marko Sulamägi** - *Converted Cameron's work to quickly installable TS skeleton app* - [MarkoSulamagi](https://github.com/MarkoSulamagi)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
