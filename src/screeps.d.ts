@@ -3,24 +3,26 @@
  * This might need some updates when Screeps publishes new features or changes it's existing API
  */
 
-declare var FIND_EXIT_RIGHT: number;
-declare var FIND_EXIT_BOTTOM: number;
-declare var FIND_EXIT_LEFT: number;
-declare var FIND_EXIT: number;
 declare var FIND_CREEPS: number;
 declare var FIND_MY_CREEPS: number;
 declare var FIND_HOSTILE_CREEPS: number;
-declare var FIND_SOURCES_ACTIVE: number;
+declare var FIND_MY_SPAWNS: number;
+declare var FIND_HOSTILE_SPAWNS: number;
 declare var FIND_SOURCES: number;
-declare var FIND_EXIT_TOP: number;
-declare var FIND_DROPPED_ENERGY: number;
+declare var FIND_SOURCES_ACTIVE: number;
+declare var FIND_DROPPED_RESOURCES: number;
 declare var FIND_STRUCTURES: number;
 declare var FIND_MY_STRUCTURES: number;
 declare var FIND_HOSTILE_STRUCTURES: number;
 declare var FIND_FLAGS: number;
 declare var FIND_CONSTRUCTION_SITES: number;
-declare var FIND_MY_SPAWNS: number;
-declare var FIND_HOSTILE_SPAWNS: number;
+declare var FIND_MY_CONSTRUCTION_SITES: number;
+declare var FIND_HOSTILE_CONSTRUCTION_SITES: number;
+declare var FIND_EXIT_TOP: number;
+declare var FIND_EXIT_RIGHT: number;
+declare var FIND_EXIT_BOTTOM: number;
+declare var FIND_EXIT_LEFT: number;
+declare var FIND_EXIT: number;
 
 declare var TOP: number;
 declare var TOP_RIGHT: number;
