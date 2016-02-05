@@ -3,13 +3,17 @@
  * This might need some updates when Screeps publishes new features or changes it's existing API
  */
 
+// Last update 2016-02-05
+declare var FIND_EXIT_TOP: number;
+declare var FIND_EXIT_RIGHT: number;
+declare var FIND_EXIT_BOTTOM: number;
+declare var FIND_EXIT_LEFT: number;
+declare var FIND_EXIT: number;
 declare var FIND_CREEPS: number;
 declare var FIND_MY_CREEPS: number;
 declare var FIND_HOSTILE_CREEPS: number;
-declare var FIND_MY_SPAWNS: number;
-declare var FIND_HOSTILE_SPAWNS: number;
-declare var FIND_SOURCES: number;
 declare var FIND_SOURCES_ACTIVE: number;
+declare var FIND_SOURCES: number;
 declare var FIND_DROPPED_RESOURCES: number;
 declare var FIND_STRUCTURES: number;
 declare var FIND_MY_STRUCTURES: number;
@@ -18,12 +22,10 @@ declare var FIND_FLAGS: number;
 declare var FIND_CONSTRUCTION_SITES: number;
 declare var FIND_MY_CONSTRUCTION_SITES: number;
 declare var FIND_HOSTILE_CONSTRUCTION_SITES: number;
-declare var FIND_EXIT_TOP: number;
-declare var FIND_EXIT_RIGHT: number;
-declare var FIND_EXIT_BOTTOM: number;
-declare var FIND_EXIT_LEFT: number;
-declare var FIND_EXIT: number;
+declare var FIND_MY_SPAWNS: number;
+declare var FIND_HOSTILE_SPAWNS: number;
 
+// Last update 2016-02-05
 declare var TOP: number;
 declare var TOP_RIGHT: number;
 declare var RIGHT: number;
@@ -33,22 +35,25 @@ declare var BOTTOM_LEFT: number;
 declare var LEFT: number;
 declare var TOP_LEFT: number;
 
+// Last update 2016-02-05
 declare var OK: number;
 declare var ERR_NOT_OWNER: number;
 declare var ERR_NO_PATH: number;
 declare var ERR_NAME_EXISTS: number;
 declare var ERR_BUSY: number;
 declare var ERR_NOT_FOUND: number;
-declare var ERR_NOT_ENOUGH_ENERGY: number;
+declare var ERR_NOT_ENOUGH_RESOURCES: number;
 declare var ERR_INVALID_TARGET: number;
 declare var ERR_FULL: number;
 declare var ERR_NOT_IN_RANGE: number;
 declare var ERR_INVALID_ARGS: number;
 declare var ERR_TIRED: number;
 declare var ERR_NO_BODYPART: number;
+declare var ERR_NOT_ENOUGH_EXTENSIONS: number;
 declare var ERR_RCL_NOT_ENOUGH: number;
 declare var ERR_GCL_NOT_ENOUGH: number;
 
+// Last update 2016-02-05
 declare var COLOR_RED: string;
 declare var COLOR_PURPLE: string;
 declare var COLOR_BLUE: string;
@@ -133,6 +138,7 @@ declare var RANGED_ATTACK_POWER: number;
 declare var HEAL_POWER: number;
 declare var RANGED_HEAL_POWER: number;
 
+// Last update 2016-02-05
 declare var MOVE: string;
 declare var WORK: string;
 declare var CARRY: string;
@@ -153,6 +159,7 @@ declare var CONSTRUCTION_COST: {
 
 declare var CONSTRUCTION_COST_ROAD_SWAMP_RATIO: number;
 
+// Last update 2016-02-05
 declare var STRUCTURE_EXTENSION: string;
 declare var STRUCTURE_RAMPART: string;
 declare var STRUCTURE_ROAD: string;
@@ -162,6 +169,15 @@ declare var STRUCTURE_WALL: string;
 declare var STRUCTURE_KEEPER_LAIR: string;
 declare var STRUCTURE_CONTROLLER: string;
 declare var STRUCTURE_STORAGE: string;
+declare var STRUCTURE_TOWER: string;
+declare var STRUCTURE_OBSERVER: string;
+declare var STRUCTURE_POWER_BANK: string;
+declare var STRUCTURE_POWER_SPAWN: string;
+
+// Last update 2016-02-05
+declare var RESOURCE_ENERGY: string;
+declare var RESOURCE_POWER: string;
+declare var RESOURCES_ALL: string[];
 
 declare var CONTROLLER_STRUCTURES: {
     spawn: {
@@ -229,10 +245,9 @@ declare var CONTROLLER_STRUCTURES: {
 declare var GCL_POW: number;
 declare var GCL_MULTIPLY: number;
 
+// Updated 2016-02-05
 declare var MODE_SIMULATION: string;
-declare var MODE_SURVIVAL: string;
 declare var MODE_WORLD: string;
-declare var MODE_ARENA: string;
 
 declare var TERRAIN_MASK_WALL: number;
 declare var TERRAIN_MASK_SWAMP: number;
@@ -280,8 +295,10 @@ interface ConstructionSite {
      */
     remove(): number;
 }
+
+// Updated 2016-02-05
 /**
- * Creeps are your units. Creeps can move, harvest energy, construct structures, attack another creeps, and perform other actions.
+ * Creeps are your units. Creeps can move, harvest energy, construct structures, attack another creeps, and perform other actions. Each creep consists of up to 50 body parts with the following possible types:
  */
 interface Creep {
     prototype: Creep;
@@ -352,14 +369,14 @@ interface Creep {
      */
     ticksToLive: number;
     /**
-     * Attack another creep or structure in a short-ranged attack. Needs the ATTACK body part. If the target is inside a rampart, then the rampart is attacked instead. The target has to be at adjacent square to the creep.
+     * Attack another creep or structure in a short-ranged attack. Needs the ATTACK body part. If the target is inside a rampart, then the rampart is attacked instead. The target has to be at adjacent square to the creep. If the target is a creep with ATTACK body parts and is not inside a rampart, it will automatically hit back at the attacker.
      * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART
      */
     attack(target: Creep|Spawn|Structure): number;
     /**
-     * Build a structure at the target construction site using carried energy. Needs WORK and CARRY body parts. The target has to be at adjacent square to the creep.
+     * Build a structure at the target construction site using carried energy. Needs WORK and CARRY body parts. The target has to be within 3 squares range of the creep.
      * @param target The target object to be attacked.
-     * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART
+     * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_NOT_ENOUGH_RESOURCES, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART, ERR_RCL_NOT_ENOUGH
      */
     build(target: ConstructionSite): number;
     /**
@@ -374,24 +391,117 @@ interface Creep {
      * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_GCL_NOT_ENOUGH
      */
     claimController(target: Structure): number;
+    /**
+     * Drop this resource on the ground.
+     * @param resourceType One of the RESOURCE_* constants.
+     * @param amount The amount of resource units to be dropped. If omitted, all the available carried amount is used.
+     */
+    drop(resourceType: string, amount?: number): number
+    /**
+     * An alias for creep.drop(RESOURCE_ENERGY, amount). This method is deprecated.
+     * @param amount The amount of resource units to be dropped. If omitted, all the available carried amount is used.
+     * @deprecated
+     */
     dropEnergy(amount?: number): number
+    /**
+     * Get the quantity of live body parts of the given type. Fully damaged parts do not count.
+     * @param type A body part type, one of the following body part constants: MOVE, WORK, CARRY, ATTACK, RANGED_ATTACK, HEAL, TOUGH
+     */
     getActiveBodyparts(type: string): number;
+    /**
+     * Harvest energy from the source. Needs the WORK body part. If the creep has an empty CARRY body part, the harvested energy is put into it; otherwise it is dropped on the ground. The target has to be at an adjacent square to the creep.
+     * @param target The source object to be harvested.
+     */
     harvest(target: Source): number;
+    /**
+     * Heal self or another creep. It will restore the target creep’s damaged body parts function and increase the hits counter. Needs the HEAL body part. The target has to be at adjacent square to the creep.
+     * @param target The target creep object.
+     */
     heal(target: Creep): number;
+    /**
+     * Move the creep one square in the specified direction. Needs the MOVE body part.
+     * @param direction
+     */
     move(direction: number) : number;
+    /**
+     * Move the creep using the specified predefined path. Needs the MOVE body part.
+     * @param path A path value as returned from Room.findPath or RoomPosition.findPathTo methods. Both array form and serialized string form are accepted.
+     */
     moveByPath(path: PathStep[]): number;
+    /**
+     * Find the optimal path to the target within the same room and move to it. A shorthand to consequent calls of pos.findPathTo() and move() methods. If the target is in another room, then the corresponding exit will be used as a target. Needs the MOVE body part.
+     * @param x X position of the target in the room.
+     * @param y Y position of the target in the room.
+     * @param opts An object containing pathfinding options flags (see Room.findPath for more info) or one of the following: reusePath, serializeMemory, noPathFinding
+     */
     moveTo(x: number, y: number, opts?: MoveToOpts): number;
+    /**
+     * Find the optimal path to the target within the same room and move to it. A shorthand to consequent calls of pos.findPathTo() and move() methods. If the target is in another room, then the corresponding exit will be used as a target. Needs the MOVE body part.
+     * @param target Can be a RoomPosition object or any object containing RoomPosition.
+     * @param opts An object containing pathfinding options flags (see Room.findPath for more info) or one of the following: reusePath, serializeMemory, noPathFinding
+     */
     moveTo(target: RoomPosition|{pos: RoomPosition}, opts?: MoveToOpts): number;
+    /**
+     * Toggle auto notification when the creep is under attack. The notification will be sent to your account email. Turned on by default.
+     * @param enabled Whether to enable notification or disable.
+     */
     notifyWhenAttacked(enabled: boolean): number;
+    /**
+     * Pick up an item (a dropped piece of energy). Needs the CARRY body part. The target has to be at adjacent square to the creep or at the same square.
+     * @param target The target object to be picked up.
+     */
     pickup(target: Energy): number;
+    /**
+     * A ranged attack against another creep or structure. Needs the RANGED_ATTACK body part. If the target is inside a rampart, the rampart is attacked instead. The target has to be within 3 squares range of the creep.
+     * @param target The target object to be attacked.
+     */
     rangedAttack(target: Creep|Spawn|Structure): number;
+    /**
+     * Heal another creep at a distance. It will restore the target creep’s damaged body parts function and increase the hits counter. Needs the HEAL body part. The target has to be within 3 squares range of the creep.
+     * @param target The target creep object.
+     */
     rangedHeal(target: Creep): number;
+    /**
+     * A ranged attack against all hostile creeps or structures within 3 squares range. Needs the RANGED_ATTACK body part. The attack power depends on the range to each target. Friendly units are not affected.
+     */
     rangedMassAttack(): number;
+    /**
+     * Repair a damaged structure using carried energy. Needs the WORK and CARRY body parts. The target has to be within 3 squares range of the creep.
+     * @param target he target structure to be repaired.
+     */
     repair(target: Spawn|Structure): number;
+    /**
+     * Temporarily block a neutral controller from claiming by other players. Each tick, this command spends 1 energy units and increases the counter of the period during which the controller is unavailable by 5 ticks. The maximum reservation period to maintain is 5,000 ticks. Reserving controllers raises your Global Control Level in parallel. Needs at least 40xWORK and 1xCARRY body parts. The target has to be at adjacent square to the creep.
+     * @param target The target controller object to be reserved.
+     */
+    reserveController(target: Controller): number;
+    /**
+     * Display a visual speech balloon above the creep with the specified message. The message will disappear after a few seconds. Useful for debugging purposes. Only the creep's owner can see the speech message.
+     * @param message The message to be displayed. Maximum length is 10 characters.
+     */
     say(message: string): number;
+    /**
+     * Kill the creep immediately.
+     */
     suicide(): number;
+    /**
+     * Transfer resource from the creep to another object. The target has to be at adjacent square to the creep.
+     * @param target The target object.
+     * @param resourceType One of the RESOURCE_* constants
+     * @param amount The amount of resources to be transferred. If omitted, all the available carried amount is used.
+     */
+    transfer(target: Creep|Spawn|Structure, resourceType: string, amount?: number): number;
+    /**
+     * An alias for creep.transfer(target, RESOURCE_ENERGY, amount). This method is deprecated.
+     * @param target The target object.
+     * @param amount The amount of resources to be transferred. If omitted, all the available carried amount is used.
+     * @deprecated use transfer() method instead.
+     */
     transferEnergy(target: Creep|Spawn|Structure, amount?: number): number;
-    unclaimController(target: Structure): number;
+    /**
+     * Upgrade your controller to the next level using carried energy. Upgrading controllers raises your Global Control Level in parallel. Needs WORK and CARRY body parts. The target has to be at adjacent square to the creep. A fully upgraded level 8 controller can't be upgraded with the power over 15 energy units per tick regardless of creeps power. The cumulative effect of all the creeps performing upgradeController in the current tick is taken into account.
+     * @param target The target controller object to be upgraded.
+     */
     upgradeController(target: Structure): number;
 }
 /**
@@ -737,82 +847,432 @@ interface RoomPosition {
     look(): LookAtResult[];
     lookFor<T>(type: string): T[];
 }
+// Updated 2016-02-05
+/**
+ * An energy source object. Can be harvested by creeps with a WORK body part.
+ */
 interface Source {
+    /**
+     * The prototype is stored in the Source.prototype global object. You can use it to extend game objects behaviour globally:
+     */
     prototype: Source;
+    /**
+     * The remaining amount of energy.
+     */
     energy: number;
+    /**
+     * The total amount of energy in the source. Equals to 3000 in most cases.
+     */
     energyCapacity: number;
+    /**
+     * A unique object identificator. You can use Game.getObjectById method to retrieve an object instance by its id.
+     */
     id: string;
+    /**
+     * An object representing the position of this structure in the room.
+     */
     pos: RoomPosition;
+    /**
+     * The link to the Room object of this structure.
+     */
     room: Room;
+    /**
+     * The remaining time after which the source will be refilled.
+     */
     ticksToRegeneration: number;
 }
+// Updated 2016-02-05
+/**
+ * Spawns are your colony centers. You can transfer energy into it and create new creeps using createCreep() method.
+ */
 interface Spawn {
+    /**
+     * The prototype is stored in the Spawn.prototype global object. You can use it to extend game objects behaviour globally:
+     */
     prototype: Spawn;
+    /**
+     * The amount of energy containing in the spawn.
+     */
     energy: number;
+    /**
+     * The total amount of energy the spawn can contain
+     */
     energyCapacity: number;
+    /**
+     * The current amount of hit points of the spawn.
+     */
     hits: number;
+    /**
+     * The maximum amount of hit points of the spawn.
+     */
     hitsMax: number;
+    /**
+     * A unique object identificator. You can use Game.getObjectById method to retrieve an object instance by its id.
+     */
     id: string;
+    /**
+     * A shorthand to Memory.spawns[spawn.name]. You can use it for quick access the spawn’s specific memory data object.
+     */
     memory: SpawnMemory;
+    /**
+     * Whether it is your spawn or foe.
+     */
     my: boolean;
+    /**
+     * Spawn’s name. You choose the name upon creating a new spawn, and it cannot be changed later. This name is a hash key to access the spawn via the Game.spawns object.
+     */
     name: string;
+    /**
+     * An object with the spawn’s owner info containing the following properties: username
+     */
     owner: Owner;
+    /**
+     * An object representing the position of this spawn in a room.
+     */
     pos: RoomPosition;
+    /**
+     * The link to the Room object of this spawn.
+     */
     room: Room;
+    /**
+     * Always equal to ‘spawn’.
+     */
     structureType: string;
+    /**
+     * If the spawn is in process of spawning a new creep, this object will contain the new creep’s information, or null otherwise.
+     * @param name The name of a new creep.
+     * @param needTime Time needed in total to complete the spawning.
+     * @param remainingTime Remaining time to go.
+     */
     spawning: {name: string, needTime: number, remainingTime: number};
+
+    /**
+     * Check if a creep can be created.
+     * @param body An array describing the new creep’s body. Should contain 1 to 50 elements with one of these constants: WORK, MOVE, CARRY, ATTACK, RANGED_ATTACK, HEAL, TOUGH
+     * @param name The name of a new creep. It should be unique creep name, i.e. the Game.creeps object should not contain another creep with the same name (hash key). If not defined, a random name will be generated.
+     */
     canCreateCreep(body: string[], name?: string): number;
+    /**
+     * Start the creep spawning process.
+     * @param body An array describing the new creep’s body. Should contain 1 to 50 elements with one of these constants: WORK, MOVE, CARRY, ATTACK, RANGED_ATTACK, HEAL, TOUGH
+     * @param name The name of a new creep. It should be unique creep name, i.e. the Game.creeps object should not contain another creep with the same name (hash key). If not defined, a random name will be generated.
+     * @param memory The memory of a new creep. If provided, it will be immediately stored into Memory.creeps[name].
+     */
     createCreep(body: string[], name?: string, memory?: any): string|number;
+    /**
+     * Destroy this spawn immediately.
+     */
     destroy(): number;
+    /**
+     * Toggle auto notification when the spawn is under attack. The notification will be sent to your account email. Turned on by default.
+     * @param enabled Whether to enable notification or disable.
+     */
     notifyWhenAttacked(enabled: boolean): number;
+    /**
+     * Increase the remaining time to live of the target creep. The target should be at adjacent square. The spawn should not be busy with the spawning process. Each execution increases the creep's timer by amount of ticks according to this formula: floor(500/body_size). Energy required for each execution is determined using this formula: ceil(creep_cost/3/body_size).
+     * @param target The target creep object.
+     */
+    renewCreep(target: Creep): number;
+    /**
+     * Transfer the energy from the spawn to a creep.
+     * @param target The creep object which energy should be transferred to.
+     * @param amount The amount of energy to be transferred. If omitted, all the remaining amount of energy will be used.
+     */
     transferEnergy(target: Creep, amount?: number): number;
 }
+// Updated 2016-02-05
+/**
+ * Parent object for structure classes
+ */
 interface Structure {
+    /**
+     * The prototype is stored in the Structure.prototype global object. You can use it to extend game objects behaviour globally:
+     */
     prototype: Structure;
+    /**
+     * The current amount of hit points of the structure.
+     */
     hits: number;
+    /**
+     * The total amount of hit points of the structure.
+     */
     hitsMax: number;
+    /**
+     * A unique object identificator. You can use Game.getObjectById method to retrieve an object instance by its id.
+     */
     id: string;
+    /**
+     * Whether this is your own structure. Walls and roads don't have this property as they are considered neutral structures.
+     */
     my: boolean;
+    /**
+     * An object with the structure’s owner info (if present) containing the following properties: username
+     */
     owner: Owner;
+    /**
+     * An object representing the position of this structure in the room.
+     */
     pos: RoomPosition;
+    /**
+     * The link to the Room object. May not be available in case a flag is placed in a room which you do not have access to.
+     */
     room: Room;
+    /**
+     * One of the STRUCTURE_* constants.
+     */
     structureType: string;
+    /**
+     * Destroy this structure immediately.
+     */
     destroy(): number;
+    /**
+     * Toggle auto notification when the structure is under attack. The notification will be sent to your account email. Turned on by default.
+     * @param enabled Whether to enable notification or disable.
+     */
     notifyWhenAttacked(enabled: boolean): number;
 }
+// Updated 2016-02-05
+/**
+ *
+ */
+interface Controller extends Structure {
+    /**
+     * Current controller level, from 0 to 8.
+     */
+    level: number;
+    /**
+     * The current progress of upgrading the controller to the next level.
+     */
+    progress: number;
+    /**
+     * The progress needed to reach the next level.
+     */
+    progressTotal: number;
+    /**
+     * An object with the controller reservation info if present: username, ticksToEnd
+     */
+    reservation: ReservationDefinition;
+    /**
+     * The amount of game ticks when this controller will lose one level. This timer can be reset by using Creep.upgradeController.
+     */
+    ticksToDowngrade: number;
+    /**
+     * Make your claimed controller neutral again.
+     */
+    unclaim(): number;
+}
+// Updated 2016-02-05
+/**
+ *
+ */
 interface Extension extends Structure {
+    /**
+     * The amount of energy containing in the extension.
+     */
     energy: number;
+    /**
+     * The total amount of energy the extension can contain.
+     */
     energyCapacity: number;
+    /**
+     * Transfer the energy from the extension to a creep.
+     * @param target The creep object which energy should be transferred to.
+     * @param amount The amount of energy to be transferred. If omitted, all the remaining amount of energy will be used.
+     */
     transferEnergy(target: Creep, amount: number): number;
 }
+// Updated 2016-02-05
+/**
+ *
+ */
 interface Link extends Structure {
+    /**
+     * The amount of game ticks the link has to wait until the next transfer is possible.
+     */
     cooldown: number;
+    /**
+     * The amount of energy containing in the link.
+     */
     energy: number;
+    /**
+     * The total amount of energy the link can contain.
+     */
     energyCapacity: number;
+    /**
+     * Transfer energy from the link to another link or a creep. If the target is a creep, it has to be at adjacent square to the link. If the target is a link, it can be at any location in the same room. Remote transfer process implies 3% energy loss and cooldown delay depending on the distance.
+     * @param target The target object.
+     * @param amount The amount of energy to be transferred. If omitted, all the available energy is used.
+     */
     transferEnergy(target: Creep|Link, amount: number): number;
 }
+// Updated 2016-02-05
+/**
+ *
+ */
 interface KeeperLair extends Structure {
+    /**
+     * Time to spawning of the next Source Keeper.
+     */
     ticksToSpawn: number;
 }
-interface Controller extends Structure {
-    level: number;
-    progress: number;
-    progressTotal: number;
-    ticksToDowngrade: number;
+// Updated 2016-02-05
+/**
+ *
+ */
+interface Observer extends Structure {
+    /**
+     * Provide visibility into a distant room from your script. The target room object will be available on the next tick. The maximum range is 5 rooms.
+     * @param roomName
+     */
+    observerRoom(roomName: string): number;
 }
+// Updated 2016-02-05
+/**
+ *
+ */
+interface PowerBank extends Structure {
+    /**
+     * The amount of power containing.
+     */
+    power: number;
+    /**
+     * The amount of game ticks when this structure will disappear.
+     */
+    ticksToDecay: number;
+}
+// Updated 2016-02-05
+/**
+ *
+ */
+interface PowerSpawn extends Structure {
+    /**
+     * The amount of energy containing in this structure.
+     */
+    energy: number;
+    /**
+     * The total amount of energy this structure can contain.
+     */
+    energyCapacity: number;
+    /**
+     * The amount of power containing in this structure.
+     */
+    power: number;
+    /**
+     * The total amount of power this structure can contain.
+     */
+    powerCapacity: number;
+
+    /**
+     * Create a power creep. Currently in development
+     * @param name The name of the power creep.
+     */
+    createPowerCreep(name: string): number
+    /**
+     * Register power resource units into your account. Registered power allows to develop power creeps skills. Consumes 1 power resource unit and 50 energy resource units.
+     */
+    processPower(): number;
+    /**
+     * Transfer the energy from this structure to a creep.
+     * @param target The creep object which energy should be transferred to.
+     * @param amount The amount of energy to be transferred. If omitted, all the remaining amount of energy will be used.
+     */
+    transferEnergy(target: Creep, amount?: number): number;
+
+}
+// Updated 2016-02-05
+/**
+ *
+ */
 interface Rampart extends Structure {
+    /**
+     * The amount of game ticks when this rampart will lose some hit points.
+     */
     ticksToDecay: number;
 }
+// Updated 2016-02-05
+/**
+ *
+ */
 interface Road extends Structure {
+    /**
+     * The amount of game ticks when this road will lose some hit points.
+     */
     ticksToDecay: number;
 }
-interface Wall extends Structure {
-    ticksToLive: number;
-}
+// Updated 2016-02-05
+/**
+ *
+ */
 interface Storage extends Structure {
-    store: {energy: number };
+    /**
+     * An object with the storage contents.
+     */
+    store: StoreDefinition,
+    /**
+     * The total amount of resources the storage can contain.
+     */
     storeCapacity: number;
+
+    /**
+     * Transfer resource from this storage to a creep. The target has to be at adjacent square.
+     * @param target The target object.
+     * @param resourceType One of the RESOURCE_* constants.
+     * @param amount The amount of resources to be transferred. If omitted, all the available amount is used.
+     */
+    transfer(target: Creep, resourceType: number, amount?: number): number;
+    /**
+     * An alias for storage.transfer(target, RESOURCE_ENERGY, amount). This method is deprecated.
+     * @param target The target object.
+     * @param amount The amount of resources to be transferred. If omitted, all the available amount is used.
+     * @deprecated
+     */
     transferEnergy(target: Creep, amount: number): number;
+}
+// Updated 2016-02-05
+/**
+ *
+ */
+interface Tower extends Structure {
+    /**
+     * The amount of energy containing in this structure.
+     */
+    energy: number;
+    /**
+     * The total amount of energy this structure can contain.
+     */
+    energyCapacity: number;
+
+    /**
+     * Remotely attack any creep in the room. Consumes 10 energy units per tick. Attack power depends on the distance to the target: from 600 hits at range 10 to 300 hits at range 40.
+     * @param target The target creep.
+     */
+    attack(target: Creep): number;
+    /**
+     * Remotely heal any creep in the room. Consumes 10 energy units per tick. Heal power depends on the distance to the target: from 400 hits at range 10 to 200 hits at range 40.
+     * @param target The target creep.
+     */
+    heal(target: Creep): number;
+    /**
+     * Remotely repair any structure in the room. Consumes 10 energy units per tick. Repair power depends on the distance to the target: from 600 hits at range 10 to 300 hits at range 40.
+     * @param target The target structure.
+     */
+    repair(target: Spawn|Structure): number;
+    /**
+     *
+     * @param target The creep object which energy should be transferred to.
+     * @param amount The amount of energy to be transferred. If omitted, all the remaining amount of energy will be used.
+     */
+    transferEnergy(target: Creep, amount?: number): number;
+}
+// Updated 2016-02-05
+/**
+ *
+ */
+interface Wall extends Structure {
+    /**
+     * The amount of game ticks when the wall will disappear (only for automatically placed border walls at the start of the game).
+     */
+    ticksToLive: number;
 }
 interface BodyPartDefinition {
     type: string;
@@ -820,6 +1280,14 @@ interface BodyPartDefinition {
 }
 interface Owner {
     username: string;
+}
+interface ReservationDefinition {
+    username: string,
+    ticksToEnd: number
+}
+interface StoreDefinition {
+    energy: number,
+    power?: number
 }
 /**
  * An object with survival game info
