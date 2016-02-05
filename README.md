@@ -87,8 +87,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Cameron VanHouzen** - *Initial work* - [vanhouc](https://github.com/vanhouc)
 * **Marko Sulamägi** - *Converted Cameron's work to quickly installable TS skeleton app* - [MarkoSulamagi](https://github.com/MarkoSulamagi)
+* **vanhouc** - *Screep project with TS functionality. His gulpfile and screep.d.ts was very useful.* - [vanhouc](https://github.com/vanhouc)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
