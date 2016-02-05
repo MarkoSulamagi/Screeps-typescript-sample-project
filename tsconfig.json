@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noResolve": false,
+    "noImplicitAny": false
+  },
+  "exclude": [ "node_modules", "dist"],
+
+  "files": ["./src/**/*.ts", "./typings/**/*.ts"],
+
+  "bundles": {
+    "main": {
+      "files": [
+        "./src/main.ts"
+      ]
+    }
+  }
+}
