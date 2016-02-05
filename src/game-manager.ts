@@ -4,13 +4,11 @@ export interface GameManagerInterface {
 }
 
 /**
- * Application start class
+ * Singleton to bootstrap game
  */
-export class GameManager implements GameManagerInterface {
+export namespace GameManager {
 
-    constructor() { }
-
-    public globalBootstrap() {
+    export function globalBootstrap() {
         // Set up your global objects.
         // This method is executed only when Screeps system instantiated new "global".
 
@@ -20,7 +18,7 @@ export class GameManager implements GameManagerInterface {
         console.log("This method is only run when new global is created by Screeps cycle");
     }
 
-    public loop() {
+    export function loop() {
         // Loop code starts here
         // This is executed every tick
 
