@@ -12,7 +12,7 @@
   "bundles": {
     "main": {
       "files": [
-        "./src/main.ts"
+        "./src/boot/main.ts"
       ]
     }
   }
