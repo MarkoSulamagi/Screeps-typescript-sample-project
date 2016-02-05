@@ -1,4 +1,111 @@
-I don't know if there are any people interested in typescript here but I thought I would share the first version of my screeps.d.ts file, I've also included a gulpfile that will compile and upload your script to the 'dev' branch. You need to have a 'secrets.js' file in the same directory that exports an object with 'email' and 'password' for you screeps account. Remember to NOT include secrets.js in your git repo. I recommend using microsofts new Visual Studio Code for editing with support for typescript intellisense and gulp integration.
-Requirements to build: node and npm gulp gulp-typescript tsd(for lodash typings)
-I'm sure there are lots of improvements that could be made, this is my first shot at a d.ts file and I didn't try to make the game objects extendable.
-I also kinda just gave up on documenting halfway through, yeah sorry :P.
+rename scripts file
+enter your username and password
+
+
+
+# Screeps typescript skeleton project
+
+This is a Screeps' project skeleton for Typescript programmers. The skeleton is based on vanhouc's work: https://github.com/vanhouc/screeps. 
+
+Skeleton includes everything you need to get up and running as quickly as possible. 
+
+* GULP watch script
+* TSProject transpiling from Typescript to Javascript
+* GULP script for automatic uploading the code to Screep's account
+* TS Interfaces for Screep's API
+* Lo-Dash typing TS interfaces
+
+Screeps is MMO strategy open world game for programmers. You write real JavaScript (in this case Typescript) which controls your units autonomously.
+
+Read more: https://screeps.com/
+
+## Getting Started
+
+This skeleton is cross platform. You can easily run the project with Jetbrains PHPStorm or use it in your VStudio. TS->JS compiling is done by TSProject: https://www.npmjs.com/package/tsproject.
+
+### Prerequisities
+
+Required dependencies:
+
+```
+- NodeJS https://nodejs.org/en/
+- `npm` command available in your CLI
+- GIT
+- `git` command available in your CLI (if you want to follow these instructions. 
+```
+
+Optional dependencies (only if you want to follow these installation instructions fully): 
+
+```
+- GIT https://git-scm.com/
+- `git` command available in your CLI (if you want to follow these instructions) 
+```
+
+### Installing
+
+```
+$ git clone git@github.com:MarkoSulamagi/Screeps-typescript-skeleton.git
+$ cd Screeps-typescript-skeleton
+
+$ npm install
+```
+
+### Configuring
+
+```
+Rename secrets.default.js file to secrets.js
+Fill "username" and "password" properties in just renamed secrets.js file with your Screep's username and email. 
+
+**NEVER COMMIT THIS FILE TO ANY VERSION CONTROL** 
+```
+
+### Coding and running the app
+
+To run the compiler and uploader, navigate to your project folder and run this command
+
+```
+$ npm start
+```
+
+Now every time you edit your typescript files, main.js in ./dist folder is uploaded to your Screep scripts into "default" branch.
+
+Project files are in ./src. About folders and files:
+
+```
+./src/main.ts - Application bootstrap. Don't change this file
+./src/start/game-manager.ts - Your main module. This is where the program starts. There are instructive comments in the class file. 
+./src/screeps.d.ts - Typescript interfaces for Screep's API. This includes autocomplete and data types to your project. This file can get outdated if Screep's team adds new functionality or changes something.
+
+./dist - Your compiled files. This will be created automatically. No need to change anything in here.
+./typings - Lo-Dash Typescript interfaces. Created automatically and no need to change anything.
+```
+
+## Running the tests
+
+No tests. Testing can definitely be done, but it's out of this project's scope. 
+You can use Jasmine and Karma to create unit tests. You might need to implement some dependency injection system. 
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+* **Cameron VanHouzen** - *Initial work* - [vanhouc](https://github.com/vanhouc)
+
+* **Marko Sulamägi** - *Converted Cameron's work to quick TS skeleton app* - [MarkoSulamagi](https://github.com/MarkoSulamagi)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* Special thanks to Screep's team for this awesome game and communit in webchat (https://webchat.freenode.net/?channels=#screeps). 
+

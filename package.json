@@ -4,7 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
-    "postinstall": "./node_modules/.bin/tsd install",
+    "postinstall": "./node_modules/.bin/tsd install && ./node_modules/.bin/gulp compile",
     "start": "./node_modules/.bin/gulp watch"
   },
   "author": "",
