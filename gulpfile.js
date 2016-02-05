@@ -11,12 +11,12 @@ gulp.task('compile', function () {
         .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('upload-sim', function () {
+gulp.task('upload-sim', ['compile'], function () {
     console.log("Starting upload");
     var email = secrets.email,
         password = secrets.password,
         data = {
-            branch: 'default',
+            branch: 'dev',
             modules: { main: fs.readFileSync('./dist/main.js', { encoding: "utf8" }) }
         };
     var req = https.request({
@@ -40,6 +40,6 @@ gulp.task('watch', function() {
     gulp.watch('./src/**/*.ts', ['build']);
 });
 
-gulp.task('build', ['compile', 'upload-sim']);
+gulp.task('build', ['upload-sim']);
 
 gulp.task('default',['watch']);
