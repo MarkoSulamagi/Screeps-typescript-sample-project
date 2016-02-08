@@ -1,21 +1,13 @@
-# Screeps typescript skeleton project
+# Screeps typescript sample project
 
-This is a Screeps' project skeleton for Typescript programmers. The skeleton is based on vanhouc's work: https://github.com/vanhouc/screeps. 
+This is a sample project to show how to start programming your Screep bots with Typescript. 
 
-Screeps is MMO strategy open world game for programmers. You write real JavaScript (in this case Typescript) which controls your units autonomously.
-
-Read more: https://screeps.com/
+This uses Typescript skeleton app: [read more](https://github.com/MarkoSulamagi/Screeps-typescript-skeleton)
 
 ## Getting Started
 
-This skeleton is cross platform. You can easily run the project with Jetbrains PHPStorm or use it in your VStudio. TS->JS compiling is done by TSProject.
-
-Skeleton includes everything you need to get up and running as quickly as possible. 
-
-* GULP script for automatic uploading the code to Screep's account
-* TSProject transpiling from Typescript to Javascript
-* TS interfaces for Screep's API
-* TS interfaces for Lo-Dash API
+After you create a spawn, this bot will create 4 creeps that are starting to harvest the closest source. The bots harvest, transfer energy back to 
+Spawn. If creep's lifespan starts to end, it will refill in Spawn.
 
 > Screep API typescript type definitions are incuded as dependency. See their up to date status in here [GitHUB link](https://github.com/MarkoSulamagi/Screeps-Typescript-Declarations)
 
@@ -76,31 +68,13 @@ Project files are in ./src.
 ./typings - Lo-Dash Typescript interfaces. Created automatically and no need to change anything.
 ```
 
-## Running the tests
-
-No tests. Testing can definitely be done, but it's out of this project's scope. 
-You can use Jasmine and Karma to create unit tests. You might need to implement some dependency injection system. 
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
 ## Authors
 
 * **Marko Sulamägi** - *Converted Cameron's work to quickly installable TS skeleton app* - [MarkoSulamagi](https://github.com/MarkoSulamagi)
-* **vanhouc** - *Screep project with TS functionality. His gulpfile and screep.d.ts was very useful.* - [vanhouc](https://github.com/vanhouc)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Special thanks to Screep's team for this awesome game and communit in webchat (https://webchat.freenode.net/?channels=#screeps). 
 

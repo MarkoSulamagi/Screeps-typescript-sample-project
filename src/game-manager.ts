@@ -1,4 +1,9 @@
-import {Harvester} from "./harvester";
+import {Config} from "./config/config";
+import {MemoryManager} from "./shared/memory-manager";
+import {RoomManager} from "./components/rooms/room-manager";
+import {SpawnManager} from "./components/spawns/spawn-manager";
+import {SourceManager} from "./components/sources/source-manager";
+import {CreepManager} from "./components/creeps/creep-manager";
 
 /**
  * Singleton object.
@@ -8,12 +13,6 @@ import {Harvester} from "./harvester";
  */
 export namespace GameManager {
 
-    /**
-     * We can use variables in our namespaces in this way. Since GameManager is not class, but "module", we have to export the var, so we could use it.
-     * @type {string}
-     */
-    export var sampleVariable: string = "This is public variable";
-
     export function globalBootstrap() {
         // Set up your global objects.
         // This method is executed only when Screeps system instantiated new "global".
@@ -21,21 +20,27 @@ export namespace GameManager {
         // Use this bootstrap wisely. You can cache some of your stuff to save CPU
         // You should extend prototypes before game loop in here.
 
-        console.log("This method is only run when new global is created by Screeps cycle");
-
-        this.sampleVariable = "This is how you can use variables in GameManager";
+        RoomManager.loadRooms();
+        SpawnManager.loadSpawns();
+        SourceManager.loadSources();
     }
 
     export function loop() {
         // Loop code starts here
         // This is executed every tick
-        console.log("SUIT UP my creeps!");
 
-        // Example how to use loop function.
-        // Let's assume we have a creep, who is called "Argos". We can do something like this:
-        var harvester = new Harvester();
-        harvester.setCreep(Game.creeps.Argos);
-        harvester.tryHarvest(Game.creeps.Argos.room.find(FIND_SOURCES_ACTIVE)[0]);
+        MemoryManager.loadMemory();
+        CreepManager.loadCreeps();
+
+        if (!CreepManager.isHarvesterLimitFull()) {
+            CreepManager.createHarvester();
+
+            if (Config.VERBOSE) {
+                console.log("Need more harvesters!");
+            }
+        }
+
+        CreepManager.harvestersGoToWork();
     }
 
 }
