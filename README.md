@@ -1,4 +1,4 @@
-[DEPRECATED] This sample project is deprecated. You can find actively updated starter kit in here: https://github.com/screepers/screeps-typescript-starter
+# [DEPRECATED] This sample project is deprecated. You can find actively updated starter kit in here: https://github.com/screepers/screeps-typescript-starter
 
 
 ## Screeps typescript sample project
