@@ -1,4 +1,7 @@
-# Screeps typescript sample project
+[DEPRECATED] This sample project is deprecated. You can find actively updated starter kit in here: https://github.com/screepers/screeps-typescript-starter
+
+
+## Screeps typescript sample project
 
 This is a sample project to show how to start programming your Screep bots with Typescript. 
 
